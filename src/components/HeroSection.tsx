@@ -1,6 +1,18 @@
+import ParallaxImage from "./ParallaxImage";
+import heroImg from "@/assets/hero-parallax.jpg";
+
 const HeroSection = () => (
-  <section className="py-24 md:py-32">
-    <div className="container max-w-4xl">
+  <section className="relative py-24 md:py-32 overflow-hidden">
+    <div className="absolute inset-0 -z-10">
+      <ParallaxImage
+        src={heroImg}
+        alt="Developer workspace"
+        speed={0.2}
+        className="absolute inset-0 h-full w-full opacity-10"
+        overlayClassName="bg-gradient-to-b from-background via-background/80 to-background"
+      />
+    </div>
+    <div className="container max-w-4xl relative">
       <p className="text-meta mb-4">Full-stack Web Developer</p>
       <h1 className="text-display text-4xl md:text-6xl lg:text-7xl leading-[1.1] mb-6">
         {"{"}" __full stack web{" "}
