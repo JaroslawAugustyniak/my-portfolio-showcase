@@ -25,8 +25,8 @@ const ProjectCard = ({ project }: ProjectCardProps) => (
           {project.title}
         </h3>
         {project.isLive ? (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 text-emerald-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] border border-[hsl(var(--success)/0.3)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--success))]" />
             Live
           </span>
         ) : (
