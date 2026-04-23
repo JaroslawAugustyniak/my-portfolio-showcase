@@ -4,6 +4,7 @@ import { getProjectBySlug } from "@/data/projects";
 import { ArrowLeft, ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GeometricBackground from "@/components/GeometricBackground";
 import NotFound from "./NotFound";
 
 const ProjectDetail = () => {
@@ -39,7 +40,8 @@ const ProjectDetail = () => {
   if (!project) return <NotFound />;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <GeometricBackground />
       <Header />
       <main className="py-12 md:py-20">
         <div className="container max-w-5xl">
