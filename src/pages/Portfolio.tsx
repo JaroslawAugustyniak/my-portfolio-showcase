@@ -3,13 +3,15 @@ import { getPaginatedProjects } from "@/data/projects";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
+import GeometricBackground from "@/components/GeometricBackground";
 
 const Portfolio = () => {
   const [page, setPage] = useState(1);
   const { projects, totalPages, currentPage } = getPaginatedProjects(page, 9);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <GeometricBackground />
       <Header />
       <main className="py-16 md:py-24">
         <div className="container">
