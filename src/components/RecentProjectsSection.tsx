@@ -8,7 +8,25 @@ const RecentProjectsSection = () => {
   const projects = getRecentProjects(6);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const maxIndex = projects.length - 3;
+  const [itemsPerView, setItemsPerView] = useState(3);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 768) setItemsPerView(1);
+      else if (w < 1024) setItemsPerView(2);
+      else setItemsPerView(3);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const maxIndex = Math.max(0, projects.length - itemsPerView);
+
+  useEffect(() => {
+    setCurrent((c) => Math.min(c, maxIndex));
+  }, [maxIndex]);
 
   const next = useCallback(() => {
     setCurrent((c) => (c >= maxIndex ? 0 : c + 1));
@@ -46,11 +64,15 @@ const RecentProjectsSection = () => {
             <div
               className="flex gap-6 transition-smooth"
               style={{
-                transform: `translateX(-${current * (100 / 3 + 2)}%)`,
+                transform: `translateX(calc(${-current} * (100% / ${itemsPerView} + 24px / ${itemsPerView} * ${itemsPerView - 1})))`,
               }}
             >
               {projects.map((project, i) => (
-                <div key={project.id} className="w-[calc(33.333%-16px)] flex-shrink-0">
+                <div
+                  key={project.id}
+                  className="flex-shrink-0"
+                  style={{ width: `calc((100% - ${(itemsPerView - 1) * 24}px) / ${itemsPerView})` }}
+                >
                   <ProjectCard project={project} index={i} />
                 </div>
               ))}
