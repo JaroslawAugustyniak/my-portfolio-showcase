@@ -6,7 +6,7 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-async function fetchFromWordPress<T>(endpoint: string, params?: Record<string, string | number | boolean>) {
+export async function fetchFromWordPress<T>(endpoint: string, params?: Record<string, string | number | boolean>) {
   const url = new URL(`${API_URL}${endpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
@@ -115,7 +115,7 @@ export async function getPostBySlug(slug: string, postType: string = 'posts', la
   }
 
   // Get the ID of the translated post from translations object
-  const translatedPostId = defaultPost.translations[lang];
+  const translatedPostId = defaultPost.translations[lang].id;
   if (!translatedPostId) {
     return null;
   }
@@ -148,20 +148,35 @@ export async function getPortfolioPosts(lang?: string): Promise<WordPressPost[]>
   }, lang);
 }
 
-export async function getPostsByCategory(categorySlug: string, lang?: string): Promise<WordPressPost[]> {
-  const categories = await fetchFromWordPress<WordPressCategory[]>('/categories', {
-    slug: categorySlug,
-    ...(lang && { lang }),
-  });
+export async function getPostsByCategory(categorySlugs: string[], lang?: string): Promise<WordPressPost[]> {
+  const allPosts: WordPressPost[] = [];
+  const seenIds = new Set<number>();
 
-  if (categories.length === 0) {
-    return [];
+  for (const slug of categorySlugs) {
+    const categories = await fetchFromWordPress<WordPressCategory[]>('/categories', {
+      slug,
+      ...(lang && { lang }),
+      acf: true,
+    });
+
+    if (categories.length === 0) {
+      continue;
+    }
+
+    const categoryId = categories[0].id;
+    const posts = await getPosts('posts', {
+      categories: categoryId,
+    }, lang);
+
+    for (const post of posts) {
+      if (!seenIds.has(post.id)) {
+        allPosts.push(post);
+        seenIds.add(post.id);
+      }
+    }
   }
 
-  const categoryId = categories[0].id;
-  return getPosts('posts', {
-    categories: categoryId,
-  }, lang);
+  return allPosts;
 }
 
 export async function getMenuItems(menuSlug: string, lang?: string): Promise<MenuItem[]> {
@@ -197,6 +212,21 @@ export async function getSiteSettings(postId?: number): Promise<Record<string, a
     return settings;
   } catch (err) {
     console.error('Failed to fetch site settings:', err);
+    return {};
+  }
+}
+
+export async function getDictionary(lang?: string): Promise<Record<string, string>> {
+  try {
+    const posts = await getPosts('dictionary', {}, lang);
+    if (!posts || posts.length === 0) {
+      return {};
+    }
+
+    const dictPost = posts[0];
+    return dictPost.acf || {};
+  } catch (err) {
+    console.error('Failed to fetch dictionary:', err);
     return {};
   }
 }

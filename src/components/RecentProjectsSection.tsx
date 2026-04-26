@@ -1,16 +1,64 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { getRecentProjects } from "@/data/projects";
+import { getPostBySlug, getPostsByCategory } from "@/lib/wordpress-api";
+import type { WordPressPost } from "@/lib/wordpress.types";
+import type { Project } from "@/data/projects";
 import { useLanguage } from "@/context/LanguageContext";
 import ProjectCard from "./ProjectCard";
+import { getTranslation } from "@/lib/translations";
 
 const RecentProjectsSection = () => {
-  const projects = getRecentProjects(6);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [current, setCurrent] = useState(0);
+  
   const [isPaused, setIsPaused] = useState(false);
   const [itemsPerView, setItemsPerView] = useState(3);
   const { currentLanguage, defaultLanguage } = useLanguage();
+
+  // Convert WordPress post to Project
+  const transformPost = (post: WordPressPost): Project => {
+    const featuredImageUrl =
+      post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+      post.featured_image?.source_url ||
+      '';
+
+    const gallery = post.meta?.gallery || [];
+    const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) || [];
+
+    return {
+      id: post.id,
+      title: post.title.rendered,
+      slug: post.slug,
+      description: post.excerpt.rendered.replace(/<[^>]*>/g, ''),
+      featuredImage: featuredImageUrl,
+      liveUrl: post.meta?.live_url || '',
+      status: post.acf?.status || 'progress',
+      date: post.date,
+      acf: post.acf || {},
+      tags: tags,
+      gallery: gallery,
+    };
+  };
+
+  // Fetch recommended posts
+  const [post, setPost] = useState<WordPressPost | null>(null);
+  useEffect(() => {
+    if (!currentLanguage) return;
+
+
+    getPostBySlug('ostatnie-projekty', 'section', currentLanguage.slug).then(setPost);
+
+
+    console.log("Ostatnie projekty", post);
+
+    getPostsByCategory(['recommended', 'recommended-en'], currentLanguage.slug)
+      .then((posts) => {
+        const transformed = posts.map(transformPost);
+        setProjects(transformed);
+      })
+      .catch(console.error);
+  }, [currentLanguage]);
 
   const getPortfolioPath = () => {
     if (currentLanguage?.slug === defaultLanguage?.slug) {
@@ -55,12 +103,12 @@ const RecentProjectsSection = () => {
     <section className="py-16 md:py-24">
       <div className="container">
         <div className="flex items-center justify-between mb-10">
-          <p className="text-meta">{"< Ostatnie projekty >"}</p>
+          <p className="text-meta">{post?.title.rendered}</p>
           <Link
             to={getPortfolioPath()}
             className="inline-flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-foreground transition-smooth"
           >
-            Wszystkie projekty <ArrowRight className="w-3.5 h-3.5" />
+            {getTranslation(currentLanguage?.slug || 'pl', 'allProjects')} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -73,7 +121,7 @@ const RecentProjectsSection = () => {
             <div
               className="flex gap-6 transition-smooth"
               style={{
-                transform: `translateX(calc(${-current} * (100% / ${itemsPerView} + 24px / ${itemsPerView} * ${itemsPerView - 1})))`,
+                transform: `translateX(calc(-${current} * (100% + 24px) / ${itemsPerView}))`,
               }}
             >
               {projects.map((project, i) => (

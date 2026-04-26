@@ -1,53 +1,55 @@
 import { Mail, Linkedin } from "lucide-react";
 
-const ContactSection = () => (
-  <section className="py-16 md:py-24" id="contact">
-    <div className="container max-w-4xl">
-      <p className="text-meta mb-8">{"{ Kontakt }"}</p>
+import { useState, useEffect } from "react";
+import { getPostBySlug } from "@/lib/wordpress-api";
+import { WordPressPost } from "@/lib/wordpress.types";
+import { useLanguage } from "@/context/LanguageContext";
+import { getTranslation } from "@/lib/translations";
+
+
+const ContactSection = () => {
+
+  const [post, setPost] = useState<WordPressPost | null>(null);
+  const { currentLanguage } = useLanguage();
+
+  useEffect(() => {
+    if (!currentLanguage) return;
+    getPostBySlug('contact', 'section', currentLanguage.slug).then(setPost);
+  }, [currentLanguage]);
+
+  return (
+
+  <section className="py-16 md:py-16" id="contact">
+    <div className="container">
+      <p className="text-meta mb-8">{post?.title.rendered}</p>
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="p-6 rounded-xl card-shadow bg-card">
-          <p className="text-meta text-[10px] mb-3">{"{NAME}"}</p>
+          <p className="text-meta text-[10px] mb-3">{getTranslation(currentLanguage?.slug || 'pl', 'contactName')}</p>
           <p className="font-display text-lg font-semibold text-foreground">
-            Jarosław Augustyniak
+            {post?.acf?.name}
           </p>
         </div>
 
         <div className="p-6 rounded-xl card-shadow bg-card">
-          <p className="text-meta text-[10px] mb-3">{"{LINKS}"}</p>
-          <div className="flex flex-col gap-3">
-            <a
-              href="https://useme.com/pl/roles/contractor/jareka,568577/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-foreground transition-smooth font-mono"
-            >
-              useme.com
-            </a>
-            <a
-              href="https://www.linkedin.com/in/jaroslaw-augustyniak-864a01a8"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-smooth font-mono"
-            >
-              <Linkedin className="w-4 h-4" /> LinkedIn
-            </a>
-          </div>
+          <p className="text-meta text-[10px] mb-3">{getTranslation(currentLanguage?.slug || 'pl', 'contactLinks')}</p>
+          <div className="flex flex-col gap-3"  dangerouslySetInnerHTML={{ __html: post?.acf?.links || '' }} />
         </div>
 
         <div className="p-6 rounded-xl card-shadow bg-card">
-          <p className="text-meta text-[10px] mb-3">{"{EMAIL}"}</p>
+          <p className="text-meta text-[10px] mb-3">{getTranslation(currentLanguage?.slug || 'pl', 'contactEmail')}</p>
           <a
-            href="mailto:jar.augustyniak@gmail.com"
+            href={`mailto:${post?.acf?.email}`}
             className="inline-flex items-center gap-2 font-display text-foreground hover:text-primary transition-smooth break-all"
           >
             <Mail className="w-4 h-4 flex-shrink-0" />
-            jar.augustyniak@gmail.com
+            {post?.acf?.email}
           </a>
         </div>
       </div>
     </div>
   </section>
 );
+};
 
 export default ContactSection;

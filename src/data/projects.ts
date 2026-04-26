@@ -1,3 +1,7 @@
+import type { WordPressPost } from '@/lib/wordpress.types';
+import { fetchFromWordPress } from '@/lib/wordpress-api';
+
+
 export interface Project {
   id: number;
   title: string;
@@ -5,295 +9,143 @@ export interface Project {
   description: string;
   featuredImage: string;
   liveUrl: string;
-  isLive: boolean;
+  status: "progress" | "online" | "archive";
   date: string;
+  acf?: {
+    [key: string]: any;
+  };
   tags: string[];
   gallery: string[];
 }
 
-export const projects: Project[] = [
-  {
-    id: 1773,
-    title: "Work Logger",
-    slug: "work-logger",
-    description: "Aplikacja służąca do rejestrowania czasu pracy przy projektach na rzecz swoich klientów, automatycznie obliczająca spodziewane wynagrodzenie na podstawie stawki godzinowej. Zarządzanie klientami, projektami, wpisami rejestru w postaci kalendarza oraz wpłatami.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/1-1024x483.png",
-    liveUrl: "https://worklogger.click/",
-    isLive: true,
-    date: "2026-01-05",
-    tags: ["React", "Node.js", "PostgreSQL", "REST API"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/4.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/5.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/3-1.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/2-1.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2026/01/6.png",
-    ],
-  },
-  {
-    id: 1743,
-    title: "Feniks finanse",
-    slug: "feniks-finanse",
-    description: "Strona internetowa dla firmy z branży finansowej. Nowoczesny design z responsywnym layoutem i zoptymalizowaną wydajnością.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/11/feniks-1024x750.png",
-    liveUrl: "https://fenix.augustyniak.xyz/",
-    isLive: true,
-    date: "2025-11-14",
-    tags: ["WordPress", "PHP", "CSS", "JavaScript"],
-    gallery: [],
-  },
-  {
-    id: 1751,
-    title: "Better Clinic",
-    slug: "better-clinic-2",
-    description: "Platforma dla kliniki medycznej z systemem rezerwacji wizyt online i prezentacją oferty usług medycznych.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/10/better-1024x609.png",
-    liveUrl: "https://new.better.clinic/",
-    isLive: true,
-    date: "2025-10-15",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    gallery: [],
-  },
-  {
-    id: 1720,
-    title: "Finapilot",
-    slug: "finapilot",
-    description: "Aplikacja webowa do zarządzania projektami z funkcjami kosztorysowania, rejestrowania czasu pracy oraz raportów i analiz.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/augustyniak.augustyniak.xyz_-1024x683.png",
-    liveUrl: "",
-    isLive: false,
-    date: "2025-09-29",
-    tags: ["Laravel", "Vue.js", "MySQL", "REST API"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/5.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/4.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/3.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/2.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/09/1.png",
-    ],
-  },
-  {
-    id: 1647,
-    title: "Agebreaker",
-    slug: "agebreaker",
-    description: "Kampania społeczna wspierająca różnorodność wiekową w miejscu pracy. Baza wiedzy, artykuły i narzędzia HR.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/08/main.jpg",
-    liveUrl: "https://agebreaker.well.hr/",
-    isLive: true,
-    date: "2025-08-01",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/08/art.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/08/article.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/08/baza.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/08/filtr.png",
-    ],
-  },
-  {
-    id: 1649,
-    title: "Madeofsteel",
-    slug: "madeofsteel",
-    description: "Sklep internetowy z produktami ze stali. E-commerce z pełnym systemem zamówień i płatności.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/06/main.jpg",
-    liveUrl: "https://madeofsteel.shop/",
-    isLive: true,
-    date: "2025-06-11",
-    tags: ["Shopware", "PHP", "JavaScript", "E-commerce"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/06/product.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/06/products.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/06/search.png",
-    ],
-  },
-  {
-    id: 1653,
-    title: "Pocztówki z powodzi",
-    slug: "pocztowki-z-powodzi",
-    description: "Kampania społeczna wspierająca turystykę na terenach popowodziowych. Interaktywna mapa i system pocztówek.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/mmain.jpg",
-    liveUrl: "https://pocztowkizpowodzi.pl/",
-    isLive: true,
-    date: "2025-03-12",
-    tags: ["WordPress", "PHP", "JavaScript", "Leaflet"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/grant.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/mapa-all.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/mapa-click.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/o-akcji.png",
-    ],
-  },
-  {
-    id: 1565,
-    title: "Alkomity",
-    slug: "alkomity",
-    description: "Porównywarka alkomatów z filtrowaniem, szczegółowymi opisami produktów i systemem rekomendacji.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/12/main.png",
-    liveUrl: "https://alkomity.pl/",
-    isLive: true,
-    date: "2024-12-14",
-    tags: ["WordPress", "WooCommerce", "PHP", "JavaScript"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/12/alko.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/12/filter.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/12/header.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/12/item.png",
-    ],
-  },
-  {
-    id: 1734,
-    title: "Pendolino",
-    slug: "pendolino",
-    description: "Strona internetowa dla marki Pendolino z nowoczesnym designem i optymalizacją SEO.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/11/pendolino-1024x613.png",
-    liveUrl: "https://pendolino.pl/",
-    isLive: true,
-    date: "2024-07-14",
-    tags: ["WordPress", "PHP", "CSS", "JavaScript"],
-    gallery: [],
-  },
-  {
-    id: 1641,
-    title: "AWX",
-    slug: "awx",
-    description: "Strona korporacyjna agencji kreatywnej z portfolio, zespołem i systemem kontaktowym.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/06/mmain.jpg",
-    liveUrl: "https://awx.pl",
-    isLive: true,
-    date: "2024-06-10",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/06/agency.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/06/clients.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/06/items.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/06/projects.png",
-    ],
-  },
-  {
-    id: 1584,
-    title: "Lang Film",
-    slug: "lang-film",
-    description: "Strona internetowa dla firmy produkcji filmowej z galerią realizacji i systemem kontaktowym.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/05/mmain.jpg",
-    liveUrl: "https://langfilmovie.pl/",
-    isLive: true,
-    date: "2024-05-14",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/05/elem.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/05/wsp.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/05/main.jpg",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/05/menu.png",
-    ],
-  },
-  {
-    id: 1643,
-    title: "Well.hr",
-    slug: "well-hr",
-    description: "Portal HR z artykułami, narzędziami i zasobami dla specjalistów ds. zarządzania zasobami ludzkimi.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/03/well-1024x576.jpg",
-    liveUrl: "https://well.hr/",
-    isLive: true,
-    date: "2024-03-12",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [],
-  },
-  {
-    id: 1547,
-    title: "Inwenta",
-    slug: "inwenta",
-    description: "Strona firmowa z katalogiem usług, zespołem i aktualnościami branżowymi.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/11/news.jpg",
-    liveUrl: "https://inwenta.pl/",
-    isLive: true,
-    date: "2023-11-15",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/11/items.jpg",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/11/menu.jpg",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/11/news.jpg",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/11/team.jpg",
-    ],
-  },
-  {
-    id: 1536,
-    title: "Centrum Medyczne Ogrodowa",
-    slug: "centrum-medyczne-ogrodowa",
-    description: "Strona centrum medycznego z systemem rezerwacji wizyt, katalogiem specjalistów i usług medycznych.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/header.png",
-    liveUrl: "https://centrumogrodowa.pl/",
-    isLive: true,
-    date: "2023-09-01",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/main-items.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/poz.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/spec.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/spec2.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2023/09/main-1.png",
-    ],
-  },
-  {
-    id: 1572,
-    title: "Deliberatio",
-    slug: "deliberatio",
-    description: "Portal informacyjny z artykułami, systemem komentarzy i wielopoziomową nawigacją.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2022/07/articles.png",
-    liveUrl: "https://deliberatio.eu",
-    isLive: true,
-    date: "2022-07-01",
-    tags: ["WordPress", "PHP", "JavaScript", "CSS"],
-    gallery: [
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2022/07/articles.png",
-      "https://portfolio.augustyniak.xyz/wp-content/uploads/2022/07/submenu.png",
-    ],
-  },
-  {
-    id: 1645,
-    title: "Hagi",
-    slug: "hagi",
-    description: "Strona internetowa firmy Hagi z prezentacją produktów i systemem kontaktowym.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2024/03/well-1024x576.jpg",
-    liveUrl: "https://hagi.com.pl/",
-    isLive: true,
-    date: "2022-05-01",
-    tags: ["WordPress", "PHP", "CSS"],
-    gallery: [],
-  },
-  {
-    id: 1569,
-    title: "Better Clinic (v1)",
-    slug: "better-clinic",
-    description: "Pierwsza wersja strony kliniki medycznej Better Clinic.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/10/better-1024x609.png",
-    liveUrl: "https://www.better.clinic",
-    isLive: false,
-    date: "2022-01-01",
-    tags: ["WordPress", "PHP", "CSS"],
-    gallery: [],
-  },
-  {
-    id: 1660,
-    title: "The Empowered Dancers",
-    slug: "the-empowered-dancers",
-    description: "Strona internetowa dla społeczności tancerzy z systemem wydarzeń i materiałami edukacyjnymi.",
-    featuredImage: "https://portfolio.augustyniak.xyz/wp-content/uploads/2025/03/mmain.jpg",
-    liveUrl: "https://theempowereddancers.com/",
-    isLive: true,
-    date: "2021-06-01",
-    tags: ["WordPress", "PHP", "CSS", "JavaScript"],
-    gallery: [],
-  },
-];
+export interface PaginatedProjects {
+  projects: Project[];
+  totalPages: number;
+  currentPage: number;
+  totalItems: number;
+}
 
-export const getRecentProjects = (count: number = 6) => projects.slice(0, count);
+function transformWordPressPostToProject(post: WordPressPost): Project {
+  const featuredImageUrl =
+    post._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+    post.featured_image?.source_url ||
+    '';
 
-export const getProjectBySlug = (slug: string) => projects.find((p) => p.slug === slug);
+  const gallery = post.meta?.gallery || [];
+  const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) || [];
 
-export const getPaginatedProjects = (page: number, perPage: number = 9) => {
-  const start = (page - 1) * perPage;
   return {
-    projects: projects.slice(start, start + perPage),
-    totalPages: Math.ceil(projects.length / perPage),
-    currentPage: page,
+    id: post.id,
+    title: post.title.rendered,
+    slug: post.slug,
+    description: post.content.rendered.replace(/<[^>]*>/g, ''),
+    featuredImage: featuredImageUrl,
+    liveUrl: post.meta?.live_url || '',
+    status: post.acf?.status || 'progress',
+    date: post.date,
+    acf: post.acf || {},
+    tags: tags,
+    gallery: gallery,
   };
-};
+}
+
+export async function getProjectBySlug(slug: string, postType: string = 'posts', lang?: string): Promise<WordPressPost | null> {
+  const posts = await fetchFromWordPress<any[]>(`/${postType}`, {
+    slug,
+    _embed: 'wp:term,wp:featuredmedia',
+    acf: true,
+  });
+
+  if (!posts || posts.length === 0) {
+    return null;
+  }
+
+  const defaultPost = posts[0];
+
+  // If no language specified or post has no translations, return default post
+  if (!lang || !defaultPost.translations) {
+    return defaultPost;
+  }
+
+  // Get the ID of the translated post from translations object
+  const translatedPostId = defaultPost.translations[lang].id;
+  if (!translatedPostId) {
+    return null;
+  }
+
+  // Fetch the translated post by ID
+  const translatedPosts = await fetchFromWordPress<WordPressPost[]>(`/${postType}`, {
+    include: translatedPostId,
+    _embed: 'wp:term,wp:featuredmedia',
+    acf: true,
+  });
+
+  return translatedPosts && translatedPosts.length > 0 ? translatedPosts[0] : null;
+}
+
+export async function getPaginatedProjects(
+  page: number = 1,
+  perPage: number = 9,
+  lang?: string
+): Promise<PaginatedProjects> {
+  try {
+    const baseUrl = import.meta.env.VITE_WORDPRESS_API_URL;
+    const url = new URL(`${baseUrl}/categories`);
+
+    url.searchParams.append('slug', 'portfolio');
+    if (lang) {
+      url.searchParams.append('lang', lang);
+    }
+
+    const categoryResponse = await fetch(url.toString());
+    if (!categoryResponse.ok) {
+      throw new Error('Failed to fetch portfolio category');
+    }
+
+    const categories = await categoryResponse.json();
+    if (!categories || categories.length === 0) {
+      throw new Error('Portfolio category not found');
+    }
+
+    const categoryId = categories[0].id;
+
+    // Fetch paginated posts
+    const postsUrl = new URL(`${baseUrl}/posts`);
+    postsUrl.searchParams.append('categories', String(categoryId));
+    postsUrl.searchParams.append('page', String(page));
+    postsUrl.searchParams.append('per_page', String(perPage));
+    postsUrl.searchParams.append('orderby', 'date');
+    postsUrl.searchParams.append('order', 'desc');
+    postsUrl.searchParams.append('_embed', 'wp:term,wp:featuredmedia');
+    postsUrl.searchParams.append('acf', 'true');
+    if (lang) {
+      postsUrl.searchParams.append('lang', lang);
+    }
+
+    const postsResponse = await fetch(postsUrl.toString());
+    if (!postsResponse.ok) {
+      throw new Error('Failed to fetch projects');
+    }
+
+    const posts = await postsResponse.json();
+    const totalItems = parseInt(postsResponse.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(postsResponse.headers.get('X-WP-TotalPages') || '1', 10);
+
+    const projects = posts.map(transformWordPressPostToProject);
+
+    return {
+      projects,
+      totalPages,
+      currentPage: page,
+      totalItems,
+    };
+  } catch (err) {
+    console.error('Failed to fetch paginated projects:', err);
+    return {
+      projects: [],
+      totalPages: 0,
+      currentPage: page,
+      totalItems: 0,
+    };
+  }
+}

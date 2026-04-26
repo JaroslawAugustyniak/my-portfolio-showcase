@@ -15,7 +15,6 @@ const HeroSection = () => {
   }, [currentLanguage]);
 
   
-
   return (
     <section className="relative py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 -z-10 pointer-events-none">
@@ -28,11 +27,18 @@ const HeroSection = () => {
           <div dangerouslySetInnerHTML={{ __html: page?.acf.header || '' }} />
         </h1>
         <div className="flex items-center gap-3 mt-8">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--success))]" />
-          </span>
-          <span className="text-sm text-muted-foreground">Dostępny do nowych projektów</span>
+          {page?.acf?.ready_for_new_projects !== false ? (
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--success))]" />
+            </span>
+          ) : (
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--danger))] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--danger))]" />
+            </span>
+          )}
+          <span className="text-sm text-muted-foreground">{page?.acf?.ready_for_new_projects_label && page.acf.ready_for_new_projects_label}</span>
          
           
         </div>

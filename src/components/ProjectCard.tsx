@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Project } from "@/data/projects";
 import { useLanguage } from "@/context/LanguageContext";
+import { getTranslation } from "@/lib/translations";
 
 interface ProjectCardProps {
   project: Project;
@@ -17,7 +18,6 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     }
     return `/${currentLanguage?.slug}${basePath}`;
   };
-
   return (
   <Link
     to={getProjectPath()}
@@ -36,14 +36,19 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         <h3 className="font-display text-lg font-semibold text-foreground tracking-tight">
           {project.title}
         </h3>
-        {project.isLive ? (
+        {project.status === "online" ? (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] border border-[hsl(var(--success)/0.3)]">
             <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--success))]" />
-            Live
+            {getTranslation(currentLanguage?.slug || 'pl', 'projectStatusOnline')}
+          </span>
+        ) : project.status === "progress" ? (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-[hsl(var(--highlight)/0.15)] text-[hsl(var(--highlight))] border border-[hsl(var(--highlight)/0.3)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--highlight))]" />
+            {getTranslation(currentLanguage?.slug || 'pl', 'projectStatusProgress')}
           </span>
         ) : (
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono bg-muted text-muted-foreground">
-            Archiwum
+            {getTranslation(currentLanguage?.slug || 'pl', 'projectStatusArchive')}
           </span>
         )}
       </div>

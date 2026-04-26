@@ -66,9 +66,9 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
     let newPath = location.pathname;
     if (isPathWithLang) {
-      newPath = location.pathname.replace(`/${currentPathLang}`, `/${slug}`);
+      newPath = location.pathname.replace(`/${currentPathLang}`, ``);
     } else if (lang !== defaultLanguage) {
-      newPath = `/${slug}${location.pathname}`;
+      newPath = `/${slug}`;
     }
 
     navigate(newPath, { replace: true });

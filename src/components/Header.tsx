@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { getMenuItems, getSiteSettings, getPostBySlug } from "@/lib/wordpress-api";
 import type { MenuItem } from "@/lib/wordpress.types";
+import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const Header = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { currentLanguage, defaultLanguage } = useLanguage();
 
@@ -35,8 +37,7 @@ const Header = () => {
 
         // Fetch settings with or without post ID
         const settings = await getSiteSettings(postId);
-        console.log(settings); // Debugging line
-
+        
         if (settings.logo) {
           setLogoUrl(settings.logo);
         }
@@ -117,35 +118,39 @@ const Header = () => {
         el.scrollIntoView({ behavior: "smooth" });
       }
     }
+    if (path.startsWith(`/${currentLanguage?.slug}/#`)) {
+      const id = path.replace(`/${currentLanguage?.slug}/#`, "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md">
       <div className="container flex items-center justify-between h-16">
-        <div className="w-10 h-10 bg-white/40 flex align-middle justify-center rounded-sm">
-        <Link to={getPath("/")} className="font-display text-xl font-bold text-foreground tracking-tighter">
-          
+        <Link to={getPath("/")} className="font-display text-xl font-bold text-foreground tracking-tighter flex-shrink-0">
           {logoUrl ? (
+            <div className="rounded bg-white/35 flex align-middle justify-center">
             <img
               src={logoUrl}
               alt="Logo"
               className="h-10 max-w-[200px] object-contain"
             />
-          ) : (
-            <span className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-foreground text-background font-bold text-lg">
-              A
-            </span>
-          )}
+            </div>
+          ) : ( '' )}
         </Link>
-        </div>
-        <nav className="flex items-center gap-8">
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8 flex-1 justify-end ml-8">
           {menuItems.length > 0 ? (
             menuItems.map((item) => {
               const itemPath = getPath(item.url);
-              const isActive =
-                itemPath === "/"
-                  ? location.pathname === "/"
-                  : location.pathname.startsWith(itemPath.replace("/#", "/"));
+              const isActive = false;
+                // itemPath === "/"
+                //   ? location.pathname === "/"
+                //   : location.pathname.startsWith(itemPath.replace("/#", "/"));
 
               if (item.url.startsWith('http')) {
                 return (
@@ -179,13 +184,13 @@ const Header = () => {
           ) : (
             // Fallback to default menu if API fails
             <>
-              <Link to={getPath("/")} className="text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+              <Link to={getPath("/")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Home
               </Link>
-              <Link to={getPath("/portfolio")} className="text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+              <Link to={getPath("/portfolio")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Portfolio
               </Link>
-              <Link to={getPath("/#contact")} className="text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+              <Link to={getPath("/#contact")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Contact
               </Link>
             </>
@@ -194,7 +199,73 @@ const Header = () => {
             <LanguageSwitcher />
           </div>
         </nav>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-4">
+          <LanguageSwitcher />
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 text-foreground hover:bg-foreground/10 rounded"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-background/95 backdrop-blur-md border-t border-border">
+          <nav className="container py-4 space-y-3">
+            {menuItems.length > 0 ? (
+              menuItems.map((item) => {
+                const itemPath = getPath(item.url);
+                if (item.url.startsWith('http')) {
+                  return (
+                    <a
+                      key={item.id}
+                      href={itemPath}
+                      target={item.target || "_self"}
+                      className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2 transition-smooth"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.title}
+                    </a>
+                  );
+                }
+                return (
+                  <Link
+                    key={item.id}
+                    to={itemPath}
+                    className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2 transition-smooth"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.title}
+                  </Link>
+                );
+              })
+            ) : (
+              <>
+                <Link to={getPath("/")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                <Link to={getPath("/portfolio")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Portfolio</Link>
+                <Link to={getPath("/#contact")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+              </>
+            )}
+          </nav>
+        </div>
+      )}
+
+      {/* Fix scrollbar shift - prevent layout shift when scrollbar appears/disappears */}
+      <style>{`
+        html {
+          overflow-y: scroll;
+          scrollbar-gutter: stable;
+        }
+      `}</style>
     </header>
   );
 };

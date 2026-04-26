@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getPostBySlug, getPageBySlug } from "@/lib/wordpress-api";
 import { WordPressPost, WordPressPage } from "@/lib/wordpress.types";
-import { useLanguage } from "@/context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext"; 
 
 const AboutSection = () => {
   const [page, setPage] = useState<WordPressPage | null>(null);
@@ -15,7 +15,6 @@ const AboutSection = () => {
   }, [currentLanguage]);
 
 
-  console.log("post", page);
 
   return (
   <section className="py-16 md:py-24" id="about">
@@ -25,7 +24,7 @@ const AboutSection = () => {
         <div className="grid gap-6" dangerouslySetInnerHTML={{ __html: page?.content.rendered || '' }} />
         <div className="grid grid-cols-2 gap-4">
           {page?.acf.skills.map((stat) => (
-            <div key={stat.label} className="p-5 rounded-xl card-shadow bg-card">
+            <div key={stat.value} className="p-5 rounded-xl card-shadow bg-card">
               <p className="text-display text-2xl mb-1">{stat.value}</p>
               <p className="text-meta text-[10px]">{stat.description}</p>
             </div>
