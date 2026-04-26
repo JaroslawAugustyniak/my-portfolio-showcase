@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "./context/LanguageContext";
+import { LoadingProvider } from "./context/LoadingContext";
+import LoadingOverlay from "./components/LoadingOverlay";
 import { useEffect } from "react";
 import Index from "./pages/Index.tsx";
 import Portfolio from "./pages/Portfolio.tsx";
@@ -28,11 +30,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <ScrollToTop />
-          <Routes>
+        <LoadingProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <LoadingOverlay />
+            <ScrollToTop />
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/:lang" element={<Index />} />
             <Route path="/projects" element={<Portfolio />} />
@@ -41,7 +45,8 @@ const App = () => (
             <Route path="/:lang/projekt/:slug" element={<ProjectDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </TooltipProvider>
+          </TooltipProvider>
+        </LoadingProvider>
       </LanguageProvider>
     </BrowserRouter>
   </QueryClientProvider>
