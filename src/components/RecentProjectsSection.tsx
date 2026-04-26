@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { getRecentProjects } from "@/data/projects";
+import { useLanguage } from "@/context/LanguageContext";
 import ProjectCard from "./ProjectCard";
 
 const RecentProjectsSection = () => {
@@ -9,6 +10,14 @@ const RecentProjectsSection = () => {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [itemsPerView, setItemsPerView] = useState(3);
+  const { currentLanguage, defaultLanguage } = useLanguage();
+
+  const getPortfolioPath = () => {
+    if (currentLanguage?.slug === defaultLanguage?.slug) {
+      return '/portfolio';
+    }
+    return `/${currentLanguage?.slug}/portfolio`;
+  };
 
   useEffect(() => {
     const update = () => {
@@ -48,7 +57,7 @@ const RecentProjectsSection = () => {
         <div className="flex items-center justify-between mb-10">
           <p className="text-meta">{"< Ostatnie projekty >"}</p>
           <Link
-            to="/portfolio"
+            to={getPortfolioPath()}
             className="inline-flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-foreground transition-smooth"
           >
             Wszystkie projekty <ArrowRight className="w-3.5 h-3.5" />

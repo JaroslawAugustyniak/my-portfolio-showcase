@@ -1,14 +1,26 @@
 import { Link } from "react-router-dom";
 import type { Project } from "@/data/projects";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ProjectCardProps {
   project: Project;
   index?: number;
 }
 
-const ProjectCard = ({ project }: ProjectCardProps) => (
+const ProjectCard = ({ project }: ProjectCardProps) => {
+  const { currentLanguage, defaultLanguage } = useLanguage();
+
+  const getProjectPath = () => {
+    const basePath = `/projekt/${project.slug}`;
+    if (currentLanguage?.slug === defaultLanguage?.slug) {
+      return basePath;
+    }
+    return `/${currentLanguage?.slug}${basePath}`;
+  };
+
+  return (
   <Link
-    to={`/projekt/${project.slug}`}
+    to={getProjectPath()}
     className="group block rounded-xl card-shadow overflow-hidden bg-card transition-smooth hover:card-shadow-hover hover:-translate-y-1"
   >
     <div className="aspect-video overflow-hidden">
@@ -43,6 +55,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => (
       </p>
     </div>
   </Link>
-);
+  );
+};
 
 export default ProjectCard;

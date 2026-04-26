@@ -1,0 +1,2 @@
+- [Project Architecture](project_architecture.md) — React frontend consuming WordPress API with Yoast SEO
+- [WordPress Integration](wordpress_integration.md) — API client, types, and hooks for fetching content
