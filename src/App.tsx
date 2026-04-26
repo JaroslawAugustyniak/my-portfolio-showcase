@@ -39,8 +39,8 @@ const App = () => (
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/:lang" element={<Index />} />
-            <Route path="/projects" element={<Portfolio />} />
-            <Route path="/:lang/projects" element={<Portfolio />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/:lang/portfolio" element={<Portfolio />} />
             <Route path="/projekt/:slug" element={<ProjectDetail />} />
             <Route path="/:lang/projekt/:slug" element={<ProjectDetail />} />
             <Route path="*" element={<NotFound />} />
