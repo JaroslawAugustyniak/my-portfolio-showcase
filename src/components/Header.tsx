@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
-import { getMenuItems, getSiteSettings, getPostBySlug } from "@/lib/wordpress-api";
+import { getMenuItems, getSiteSettings, getPostBySlug } from '@/lib/api-switcher';
 import type { MenuItem } from "@/lib/wordpress.types";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -57,7 +57,7 @@ const Header = () => {
           }
         }
 
-        if (settings.seo.og_image) {
+        if (settings?.seo?.og_image) {
           const og_image = document.querySelector("meta[property='og:image']");
           const tw_image = document.querySelector("meta[name='twitter:image']");
           if (og_image) {
@@ -111,18 +111,24 @@ const Header = () => {
   };
 
   const handleClick = (path: string) => {
+    // Handle anchor links - check if element exists on current page
+    let anchorId: string | null = null;
+
     if (path.startsWith("/#")) {
-      const id = path.replace("/#", "");
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
+      anchorId = path.replace("/#", "");
+    } else if (path.startsWith(`/${currentLanguage?.slug}/#`)) {
+      anchorId = path.replace(`/${currentLanguage?.slug}/#`, "");
     }
-    if (path.startsWith(`/${currentLanguage?.slug}/#`)) {
-      const id = path.replace(`/${currentLanguage?.slug}/#`, "");
-      const el = document.getElementById(id);
+
+    if (anchorId) {
+      const el = document.getElementById(anchorId);
       if (el) {
+        // Element exists on current page, scroll to it
         el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        // Element doesn't exist on current page, navigate to root with anchor
+        const basePath = currentLanguage?.slug === defaultLanguage?.slug ? "/" : `/${currentLanguage?.slug}`;
+        window.location.href = `${basePath}#${anchorId}`;
       }
     }
   };

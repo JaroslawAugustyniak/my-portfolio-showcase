@@ -15,8 +15,12 @@ services:
     networks:
       - default
       - nginx-proxy-network
+      - wp
 
 networks:
   nginx-proxy-network:
     external: true
     name: nginx-proxy-network
+  wp:
+    external: true
+    name: wp

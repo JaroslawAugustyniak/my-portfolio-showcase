@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Generated API cache (created by fetch-api.js)
+public/api/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

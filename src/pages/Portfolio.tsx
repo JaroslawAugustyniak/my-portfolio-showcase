@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
 import GeometricBackground from "@/components/GeometricBackground";
 import { useLanguage } from "@/context/LanguageContext";
-import { getPageBySlug } from "@/lib/wordpress-api";
+import { getPageBySlug } from '@/lib/api-switcher';
 import { WordPressPage } from "@/lib/wordpress.types";
 
 const Portfolio = () => {

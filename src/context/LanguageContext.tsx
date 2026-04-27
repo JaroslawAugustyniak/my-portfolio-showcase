@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getLanguages } from '@/lib/wordpress-api';
+import { getLanguages } from '@/lib/api-switcher';
 import type { Language } from '@/lib/wordpress.types';
 
 interface LanguageContextType {
@@ -60,17 +60,8 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
     setCurrentLanguage(lang);
 
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const currentPathLang = pathSegments[0];
-    const isPathWithLang = languages.some((l) => l.slug === currentPathLang);
-
-    let newPath = location.pathname;
-    if (isPathWithLang) {
-      newPath = location.pathname.replace(`/${currentPathLang}`, ``);
-    } else if (lang !== defaultLanguage) {
-      newPath = `/${slug}`;
-    }
-
+    // Always navigate to homepage for the selected language
+    const newPath = lang === defaultLanguage ? '/' : `/${slug}`;
     navigate(newPath, { replace: true });
   };
 

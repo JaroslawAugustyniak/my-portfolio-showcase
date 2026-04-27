@@ -25,6 +25,15 @@ export interface WordPressPage {
   _embedded?: {
     [key: string]: any;
   };
+  siteSettings?: {
+    [key: string]: any;
+  };
+  translations?: {
+    [lang: string]: {
+      id: number;
+      slug: string;
+    };
+  };
 }
 
 export interface WordPressPost extends WordPressPage {
@@ -33,6 +42,9 @@ export interface WordPressPost extends WordPressPage {
     source_url: string;
     alt_text: string;
   };
+  featured_image_url?: string; // Local cached image URL
+  og_image_urls?: string[]; // Local cached OG images
+  gallery_urls?: string[]; // Local cached gallery images
   tags?: number[];
   categories?: number[];
   meta?: {

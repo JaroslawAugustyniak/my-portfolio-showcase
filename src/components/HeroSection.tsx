@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPosts, getPageBySlug } from "@/lib/wordpress-api";
+import { getPosts, getPageBySlug } from '@/lib/api-switcher';
 import { WordPressPost, WordPressPage } from "@/lib/wordpress.types";
 import { useLanguage } from "@/context/LanguageContext";
 

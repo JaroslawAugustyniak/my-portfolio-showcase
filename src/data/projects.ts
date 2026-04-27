@@ -1,5 +1,5 @@
 import type { WordPressPost } from '@/lib/wordpress.types';
-import { fetchFromWordPress } from '@/lib/wordpress-api';
+import { getPostBySlug } from '@/lib/api-switcher';
 
 
 export interface Project {
@@ -36,7 +36,7 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
 
   return {
     id: post.id,
-    title: post.title.rendered,
+    title: post.title.rendered, 
     slug: post.slug,
     description: post.content.rendered.replace(/<[^>]*>/g, ''),
     featuredImage: featuredImageUrl,
@@ -50,37 +50,7 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
 }
 
 export async function getProjectBySlug(slug: string, postType: string = 'posts', lang?: string): Promise<WordPressPost | null> {
-  const posts = await fetchFromWordPress<any[]>(`/${postType}`, {
-    slug,
-    _embed: 'wp:term,wp:featuredmedia',
-    acf: true,
-  });
-
-  if (!posts || posts.length === 0) {
-    return null;
-  }
-
-  const defaultPost = posts[0];
-
-  // If no language specified or post has no translations, return default post
-  if (!lang || !defaultPost.translations) {
-    return defaultPost;
-  }
-
-  // Get the ID of the translated post from translations object
-  const translatedPostId = defaultPost.translations[lang].id;
-  if (!translatedPostId) {
-    return null;
-  }
-
-  // Fetch the translated post by ID
-  const translatedPosts = await fetchFromWordPress<WordPressPost[]>(`/${postType}`, {
-    include: translatedPostId,
-    _embed: 'wp:term,wp:featuredmedia',
-    acf: true,
-  });
-
-  return translatedPosts && translatedPosts.length > 0 ? translatedPosts[0] : null;
+  return getPostBySlug(slug, postType, lang);
 }
 
 export async function getPaginatedProjects(
@@ -89,49 +59,26 @@ export async function getPaginatedProjects(
   lang?: string
 ): Promise<PaginatedProjects> {
   try {
-    const baseUrl = import.meta.env.VITE_WORDPRESS_API_URL;
-    const url = new URL(`${baseUrl}/categories`);
+    // Import dynamically to avoid circular dependency
+    const { getPortfolioPosts } = await import('@/lib/api-switcher');
 
-    url.searchParams.append('slug', 'portfolio');
-    if (lang) {
-      url.searchParams.append('lang', lang);
+    const allPosts = await getPortfolioPosts(lang);
+    if (!allPosts) {
+      return {
+        projects: [],
+        totalPages: 0,
+        currentPage: page,
+        totalItems: 0,
+      };
     }
 
-    const categoryResponse = await fetch(url.toString());
-    if (!categoryResponse.ok) {
-      throw new Error('Failed to fetch portfolio category');
-    }
+    const totalItems = allPosts.length;
+    const totalPages = Math.ceil(totalItems / perPage);
+    const startIdx = (page - 1) * perPage;
+    const endIdx = startIdx + perPage;
 
-    const categories = await categoryResponse.json();
-    if (!categories || categories.length === 0) {
-      throw new Error('Portfolio category not found');
-    }
-
-    const categoryId = categories[0].id;
-
-    // Fetch paginated posts
-    const postsUrl = new URL(`${baseUrl}/posts`);
-    postsUrl.searchParams.append('categories', String(categoryId));
-    postsUrl.searchParams.append('page', String(page));
-    postsUrl.searchParams.append('per_page', String(perPage));
-    postsUrl.searchParams.append('orderby', 'date');
-    postsUrl.searchParams.append('order', 'desc');
-    postsUrl.searchParams.append('_embed', 'wp:term,wp:featuredmedia');
-    postsUrl.searchParams.append('acf', 'true');
-    if (lang) {
-      postsUrl.searchParams.append('lang', lang);
-    }
-
-    const postsResponse = await fetch(postsUrl.toString());
-    if (!postsResponse.ok) {
-      throw new Error('Failed to fetch projects');
-    }
-
-    const posts = await postsResponse.json();
-    const totalItems = parseInt(postsResponse.headers.get('X-WP-Total') || '0', 10);
-    const totalPages = parseInt(postsResponse.headers.get('X-WP-TotalPages') || '1', 10);
-
-    const projects = posts.map(transformWordPressPostToProject);
+    const paginatedPosts = allPosts.slice(startIdx, endIdx);
+    const projects = paginatedPosts.map(transformWordPressPostToProject);
 
     return {
       projects,

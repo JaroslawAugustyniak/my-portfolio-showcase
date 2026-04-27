@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getDictionary } from '@/lib/wordpress-api';
+import { getDictionary } from '@/lib/api-switcher';
 import { useLanguage } from '@/context/LanguageContext';
 
 export function useDictionary() {

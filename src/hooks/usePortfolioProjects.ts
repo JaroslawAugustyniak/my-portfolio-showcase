@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Project } from '@/data/projects';
-import { getPortfolioPosts } from '@/lib/wordpress-api';
+import { getPortfolioPosts } from '@/lib/api-switcher';
 import type { WordPressPost } from '@/lib/wordpress.types';
 
 function transformWordPressPostToProject(post: WordPressPost): Project {
@@ -19,7 +19,7 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
     description: post.excerpt.rendered.replace(/<[^>]*>/g, ''),
     featuredImage: featuredImageUrl,
     liveUrl: post.meta?.live_url || '',
-    isLive: !!post.meta?.live_url,
+    status: post.acf?.status || 'progress',
     date: post.date,
     tags: tags,
     gallery: gallery,

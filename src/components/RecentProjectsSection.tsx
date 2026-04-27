@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { getPostBySlug, getPostsByCategory } from "@/lib/wordpress-api";
+import { getPostBySlug, getRecommendedPortfolioPosts } from '@/lib/api-switcher';
 import type { WordPressPost } from "@/lib/wordpress.types";
 import type { Project } from "@/data/projects";
 import { useLanguage } from "@/context/LanguageContext";
@@ -52,7 +52,7 @@ const RecentProjectsSection = () => {
 
     console.log("Ostatnie projekty", post);
 
-    getPostsByCategory(['recommended', 'recommended-en'], currentLanguage.slug)
+    getRecommendedPortfolioPosts(currentLanguage.slug)
       .then((posts) => {
         const transformed = posts.map(transformPost);
         setProjects(transformed);

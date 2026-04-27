@@ -1,7 +1,7 @@
 import { Mail, Linkedin } from "lucide-react";
 
 import { useState, useEffect } from "react";
-import { getPostBySlug } from "@/lib/wordpress-api";
+import { getPostBySlug } from '@/lib/api-switcher';
 import { WordPressPost } from "@/lib/wordpress.types";
 import { useLanguage } from "@/context/LanguageContext";
 import { getTranslation } from "@/lib/translations";

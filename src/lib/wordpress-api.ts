@@ -130,10 +130,50 @@ export async function getPostBySlug(slug: string, postType: string = 'posts', la
   return translatedPosts && translatedPosts.length > 0 ? translatedPosts[0] : null;
 }
 
+async function applyTranslations(posts: WordPressPost[], lang?: string): Promise<WordPressPost[]> {
+  if (!lang) {
+    return posts;
+  }
+
+  const translatedPosts = await Promise.all(
+    posts.map(async (post) => {
+      if (!post.translations || !post.translations[lang]) {
+        return post;
+      }
+
+      const translatedPostId = post.translations[lang].id;
+      const translatedPostsData = await fetchFromWordPress<WordPressPost[]>('/posts', {
+        include: translatedPostId,
+        _embed: 'wp:term,wp:featuredmedia',
+      });
+
+      return translatedPostsData && translatedPostsData.length > 0 ? translatedPostsData[0] : post;
+    })
+  );
+
+  return translatedPosts;
+}
+
 export async function getPortfolioPosts(lang?: string): Promise<WordPressPost[]> {
+  const categories = await fetchFromWordPress<WordPressCategory[]>('/categories');
+
+  if (categories.length === 0) {
+    throw new Error('Portfolio category not found');
+  }
+
+  const categoryId = categories[0].id;
+  const posts = await getPosts('posts', {
+    categories: categoryId,
+    orderby: 'date',
+    order: 'desc',
+  });
+
+  return applyTranslations(posts, lang);
+}
+
+export async function getRecommendedPortfolioPosts(lang?: string): Promise<WordPressPost[]> {
   const categories = await fetchFromWordPress<WordPressCategory[]>('/categories', {
-    slug: 'portfolio',
-    ...(lang && { lang }),
+    slug: 'recommended',
   });
 
   if (categories.length === 0) {
@@ -141,11 +181,13 @@ export async function getPortfolioPosts(lang?: string): Promise<WordPressPost[]>
   }
 
   const categoryId = categories[0].id;
-  return getPosts('posts', {
+  const posts = await getPosts('posts', {
     categories: categoryId,
     orderby: 'date',
     order: 'desc',
-  }, lang);
+  });
+
+  return applyTranslations(posts, lang);
 }
 
 export async function getPostsByCategory(categorySlugs: string[], lang?: string): Promise<WordPressPost[]> {

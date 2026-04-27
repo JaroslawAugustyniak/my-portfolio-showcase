@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 
 import { useState, useEffect } from "react";
-import { getMenuItems, getSiteSettings } from "@/lib/wordpress-api";
+import { getMenuItems, getSiteSettings } from '@/lib/api-switcher';
 import { MenuItem } from "@/lib/wordpress.types";
 
 const Footer = () => {
