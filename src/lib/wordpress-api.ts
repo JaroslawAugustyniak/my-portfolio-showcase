@@ -65,9 +65,8 @@ export async function getPageBySlug(slug: string, lang?: string): Promise<WordPr
 
   const defaultPage = pages[0];
 
-
   // If no language specified or page has no translations, return default page
-  if (!lang || !defaultPage.translations) {
+  if (!lang || !defaultPage.translations || !defaultPage.translations[lang]) {
     return defaultPage;
   }
 
@@ -110,7 +109,7 @@ export async function getPostBySlug(slug: string, postType: string = 'posts', la
   const defaultPost = posts[0];
 
   // If no language specified or post has no translations, return default post
-  if (!lang || !defaultPost.translations) {
+  if (!lang || !defaultPost.translations || !defaultPost.translations[lang]) {
     return defaultPost;
   }
 

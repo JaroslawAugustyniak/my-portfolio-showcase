@@ -189,17 +189,17 @@ const Header = () => {
             })
           ) : (
             // Fallback to default menu if API fails
-            <>
-              <Link to={getPath("/")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+            [
+              <Link key="home" to={getPath("/")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Home
-              </Link>
-              <Link to={getPath("/portfolio")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+              </Link>,
+              <Link key="portfolio" to={getPath("/portfolio")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Portfolio
-              </Link>
-              <Link to={getPath("/#contact")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
+              </Link>,
+              <Link key="contact" to={getPath("/#contact")} className="hidden md:inline text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground">
                 Contact
-              </Link>
-            </>
+              </Link>,
+            ]
           )}
           <div className="flex items-center gap-4 pl-4 border-l border-border">
             <LanguageSwitcher />
@@ -255,11 +255,11 @@ const Header = () => {
                 );
               })
             ) : (
-              <>
-                <Link to={getPath("/")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-                <Link to={getPath("/portfolio")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Portfolio</Link>
-                <Link to={getPath("/#contact")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
-              </>
+              [
+                <Link key="home" to={getPath("/")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>,
+                <Link key="portfolio" to={getPath("/portfolio")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Portfolio</Link>,
+                <Link key="contact" to={getPath("/#contact")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>,
+              ]
             )}
           </nav>
         </div>

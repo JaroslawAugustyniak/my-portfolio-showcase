@@ -43,11 +43,11 @@ const ProjectDetail = () => {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!slug) {
+    if (!slug || !currentLanguage) {
       setProject(null);
       return;
     }
-    getProjectBySlug(slug, 'posts', currentLanguage?.slug)
+    getProjectBySlug(slug, 'posts', currentLanguage.slug)
       .then((result) => {
         if (result) {
           const transformed = transformWordPressPostToProject(result);
@@ -100,9 +100,6 @@ const ProjectDetail = () => {
       </div>
     );
   }
-
-  console.log('Project data:', project);
-  console.log('Project data:', project.tags);
 
   // Project not found
   if (!slug || project === null) return <NotFound />;

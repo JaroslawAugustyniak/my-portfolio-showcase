@@ -5,19 +5,9 @@ import type { WordPressPage, WordPressPost, Language, MenuItem } from './wordpre
 
 async function fetchLocalJson<T>(filename: string, lang?: string): Promise<T | null> {
   try {
-    const url = lang ? `/api/${lang}/${filename}` : `/api/${filename}`;
+    const finalLang = lang || 'pl';
+    const url = `/api/${finalLang}/${filename}`;
     const response = await fetch(url);
-
-    // If file not found and no lang specified, try with default language 'pl'
-    if (!response.ok && !lang) {
-      const fallbackUrl = `/api/pl/${filename}`;
-      const fallbackResponse = await fetch(fallbackUrl);
-      if (fallbackResponse.ok) {
-        return await fallbackResponse.json();
-      }
-      console.warn(`Failed to load ${url} and fallback ${fallbackUrl}`);
-      return null;
-    }
 
     if (!response.ok) {
       console.warn(`Failed to load ${url}`);
@@ -32,8 +22,17 @@ async function fetchLocalJson<T>(filename: string, lang?: string): Promise<T | n
 
 
 export async function getLanguages(): Promise<Language[]> {
-  const data = await fetchLocalJson<Language[]>('languages.json');
-  return data || [];
+  try {
+    const response = await fetch('/api/languages.json');
+    if (!response.ok) {
+      console.warn('Failed to load /api/languages.json');
+      return [];
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error loading languages.json:', error);
+    return [];
+  }
 }
 
 export async function getPages(lang?: string): Promise<WordPressPage[]> {
