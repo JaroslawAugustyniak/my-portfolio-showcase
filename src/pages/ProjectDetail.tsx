@@ -18,7 +18,8 @@ const transformWordPressPostToProject = (post: WordPressPost): Project => {
     '';
 
   const gallery = post.meta?.gallery || [];
-  const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) || [];
+  const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) ||
+               (Array.isArray(post.tags) && typeof post.tags[0] === 'string' ? post.tags : []);
 
   return {
     id: post.id,
@@ -99,6 +100,9 @@ const ProjectDetail = () => {
       </div>
     );
   }
+
+  console.log('Project data:', project);
+  console.log('Project data:', project.tags);
 
   // Project not found
   if (!slug || project === null) return <NotFound />;

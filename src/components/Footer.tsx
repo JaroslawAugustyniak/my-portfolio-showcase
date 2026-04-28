@@ -42,52 +42,7 @@ const Footer = () => {
   return (
   <footer className="border-t border-border py-8 mt-24">
     <div className="container flex flex-col sm:flex-row items-center justify-between gap-4">
-      <nav className="flex items-center gap-6">
-       
-          {menuItems.length > 0 ? (
-            menuItems.map((item) => {
-              const itemPath = getPath(item.url);
-              const isActive = false; 
-                // itemPath === "/"
-                //   ? location.pathname === "/"
-                //   : location.pathname.startsWith(itemPath.replace("/#", "/"));
-
-              if (item.url.startsWith('http')) {
-                return (
-                  <a
-                    key={item.id}
-                    href={itemPath}
-                    target={item.target || "_self"}
-                    className="text-sm font-mono transition-smooth text-muted-foreground hover:text-foreground"
-                  >
-                    {item.title}
-                  </a>
-                );
-              }
-
-              return (
-                <Link
-                  key={item.id}
-                  to={itemPath}
-                  onClick={() => handleClick(itemPath)}
-                  className={`text-sm font-mono transition-smooth relative ${
-                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {item.title}
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                  )}
-                </Link>
-              );
-            })
-          ) : (
-            // Fallback to default menu if API fails
-            <>
-
-            </>
-          )}
-      </nav>
+      
       <p className="text-xs text-muted-foreground">
         Copyright © {new Date().getFullYear()} {settings?.name}.
       </p>

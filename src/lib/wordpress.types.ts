@@ -45,7 +45,7 @@ export interface WordPressPost extends WordPressPage {
   featured_image_url?: string; // Local cached image URL
   og_image_urls?: string[]; // Local cached OG images
   gallery_urls?: string[]; // Local cached gallery images
-  tags?: number[];
+  tags?: (number | string)[];
   categories?: number[];
   meta?: {
     gallery?: string[];

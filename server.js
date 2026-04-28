@@ -12,6 +12,10 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // SPA Fallback - wszystkie nieznane routes → index.html
 // React Router przejmuje routing po stronie klienta
 app.get('*', (req, res) => {
+  // Dla /api/ nie zwracaj index.html - express.static już obsłużył pliki
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).send('Not found');
+  }
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 

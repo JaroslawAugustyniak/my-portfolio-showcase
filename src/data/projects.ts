@@ -32,7 +32,8 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
     '';
 
   const gallery = post.meta?.gallery || [];
-  const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) || [];
+  const tags = post._embedded?.['wp:term']?.[1]?.map((tag: any) => tag.name) ||
+               (Array.isArray(post.tags) && typeof post.tags[0] === 'string' ? post.tags : []);
 
   return {
     id: post.id,
@@ -50,6 +51,7 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
 }
 
 export async function getProjectBySlug(slug: string, postType: string = 'posts', lang?: string): Promise<WordPressPost | null> {
+  console.log(`Fetching project with slug: ${slug}, postType: ${postType}, lang: ${lang}`);
   return getPostBySlug(slug, postType, lang);
 }
 
