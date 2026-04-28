@@ -1,0 +1,26 @@
+RewriteRule ^\.builds - [F,L]
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Nie przepisuj istniejące pliki i foldery
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Obsługuj /api/images/ -> szukaj w /wp-content/uploads/
+  # Opcja 1: Jeśli pliki zawsze w bieżącym roku/miesiącu
+  RewriteRule ^api/images/(.+)$ wp-content/uploads/2025/09/$1 [L,NC]
+
+  # Opcja 2: Sprawdzaj również w innych popularnych miesiącach
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^api/images/(.+)$ wp-content/uploads/2025/10/$1 [L,NC]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^api/images/(.+)$ wp-content/uploads/2025/08/$1 [L,NC]
+
+  # Wszystkie inne requesty › index.html (dla React Router)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.html [L]
+</IfModule>

@@ -52,7 +52,14 @@ export async function getPageBySlug(slug: string, lang?: string): Promise<WordPr
 
 export async function getPosts(postType?: string, _params?: any, lang?: string): Promise<WordPressPost[]> {
   // Czytaj z odpowiedniego pliku na podstawie postType
-  const filename = postType === 'section' ? 'sections.json' : 'projects.json';
+   
+  var filename;
+  switch(postType){
+    case 'section': filename = 'sections.json'; break;
+    case 'posts': filename = 'posts.json'; break;
+    default: filename = 'projects.json'; break;
+  }
+
   const data = await fetchLocalJson<{ siteSettings?: any; data?: WordPressPost[] } | WordPressPost[]>(filename, lang);
   if (Array.isArray(data)) {
     return data;
@@ -67,7 +74,7 @@ export async function getPostBySlug(slug: string, postType?: string, lang?: stri
 
 export async function getPortfolioPosts(lang?: string): Promise<WordPressPost[]> {
   // Wszystkie projekty z projects.json to już recommended category
-  return getPosts(undefined, undefined, lang);
+  return getPosts('posts', undefined, lang);
 }
 
 export async function getRecommendedPortfolioPosts(lang?: string): Promise<WordPressPost[]> {
