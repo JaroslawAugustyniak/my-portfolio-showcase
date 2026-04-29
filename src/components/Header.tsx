@@ -138,7 +138,7 @@ const Header = () => {
       <div className="container flex items-center justify-between h-16">
         <Link to={getPath("/")} className="font-display text-xl font-bold text-foreground tracking-tighter flex-shrink-0">
           {logoUrl ? (
-            <div className="rounded bg-white/35 flex align-middle justify-center">
+            <div className="rounded flex align-middle justify-center">
             <img
               src={logoUrl}
               alt="Logo"
