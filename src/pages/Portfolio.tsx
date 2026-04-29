@@ -7,6 +7,7 @@ import GeometricBackground from "@/components/GeometricBackground";
 import { useLanguage } from "@/context/LanguageContext";
 import { getPageBySlug } from '@/lib/api-switcher';
 import { WordPressPage } from "@/lib/wordpress.types";
+import ContactSection from "@/components/ContactSection";
 
 const Portfolio = () => {
 
@@ -69,6 +70,7 @@ const Portfolio = () => {
           )}
         </div>
       </main>
+      <ContactSection />
       <Footer />
     </div>
   );

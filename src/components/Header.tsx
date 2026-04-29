@@ -110,7 +110,7 @@ const Header = () => {
     return `/${currentLanguage?.slug}${normalizedPath}`;
   };
 
-  const handleClick = (path: string) => {
+  const handleClick = (path: string, e?: React.MouseEvent) => {
     // Handle anchor links - check if element exists on current page
     let anchorId: string | null = null;
 
@@ -123,13 +123,11 @@ const Header = () => {
     if (anchorId) {
       const el = document.getElementById(anchorId);
       if (el) {
-        // Element exists on current page, scroll to it
-        el.scrollIntoView({ behavior: "smooth" });
-      } else {
-        // Element doesn't exist on current page, navigate to root with anchor
-        const basePath = currentLanguage?.slug === defaultLanguage?.slug ? "/" : `/${currentLanguage?.slug}`;
-        window.location.href = `${basePath}#${anchorId}`;
+        // Element exists on current page, scroll to it without changing URL
+        e?.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+      // If element doesn't exist, allow normal link navigation
     }
   };
 
@@ -175,7 +173,7 @@ const Header = () => {
                 <Link
                   key={item.id}
                   to={itemPath}
-                  onClick={() => handleClick(itemPath)}
+                  onClick={(e) => handleClick(itemPath, e as any)}
                   className={`text-sm font-mono transition-smooth relative ${
                     isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
@@ -248,7 +246,10 @@ const Header = () => {
                     key={item.id}
                     to={itemPath}
                     className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2 transition-smooth"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => {
+                      handleClick(itemPath, e as any);
+                      setIsMobileMenuOpen(false);
+                    }}
                   >
                     {item.title}
                   </Link>
@@ -258,7 +259,7 @@ const Header = () => {
               [
                 <Link key="home" to={getPath("/")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>,
                 <Link key="portfolio" to={getPath("/portfolio")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Portfolio</Link>,
-                <Link key="contact" to={getPath("/#contact")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>,
+                <Link key="contact" to={getPath("/#contact")} className="block text-sm font-mono text-muted-foreground hover:text-foreground py-2" onClick={(e) => { handleClick(getPath("/#contact"), e as any); setIsMobileMenuOpen(false); }}>Contact</Link>,
               ]
             )}
           </nav>

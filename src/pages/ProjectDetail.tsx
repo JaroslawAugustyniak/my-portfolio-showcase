@@ -10,6 +10,7 @@ import GeometricBackground from "@/components/GeometricBackground";
 import NotFound from "./NotFound";
 import { useLanguage } from "@/context/LanguageContext";
 import { getTranslation } from "@/lib/translations";
+import ContactSection from "@/components/ContactSection";
 
 const transformWordPressPostToProject = (post: WordPressPost): Project => {
   const featuredImageUrl =
@@ -199,6 +200,7 @@ const ProjectDetail = () => {
           )}
         </div>
       </main>
+      <ContactSection />
       <Footer />
 
       {/* Lightbox */}

@@ -18,10 +18,29 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!location.hash) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    const handleScroll = () => {
+      // If there's a hash, scroll to that element
+      if (location.hash) {
+        const anchorId = location.hash.replace('#', '');
+        const element = document.getElementById(anchorId);
+
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        // Otherwise, scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    // Wait for page to fully load
+    if (document.readyState === 'complete') {
+      handleScroll();
+    } else {
+      window.addEventListener('load', handleScroll);
+      return () => window.removeEventListener('load', handleScroll);
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   return null;
 };
