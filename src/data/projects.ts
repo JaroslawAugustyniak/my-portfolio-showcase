@@ -50,6 +50,8 @@ function transformWordPressPostToProject(post: WordPressPost): Project {
   };
 }
 
+
+
 export async function getProjectBySlug(slug: string, postType: string = 'posts', lang?: string): Promise<WordPressPost | null> {
   console.log(`Fetching project with slug: ${slug}, postType: ${postType}, lang: ${lang}`);
   return getPostBySlug(slug, postType, lang);

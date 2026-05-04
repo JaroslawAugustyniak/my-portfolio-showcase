@@ -99,25 +99,24 @@ export async function getMenuItems(_menuSlug?: string, lang?: string): Promise<M
 
 export async function getSiteSettings(postId?: number, lang?: string): Promise<Record<string, any>> {
   // Jeśli postId jest podane, spróbuj znaleźć siteSettings z tego posta
-  if (postId) {
-    const projects = await fetchLocalJson<{ siteSettings?: any; data?: WordPressPost[] } | WordPressPost[]>('projects.json', lang);
-    const projectsList = Array.isArray(projects) ? projects : projects?.data;
-    if (projectsList) {
-      const post = projectsList.find(p => p.id === postId);
-      if (post?.siteSettings) return post.siteSettings;
-    }
+  // if (postId) {
+  //   const projects = await fetchLocalJson<{ siteSettings?: any; data?: WordPressPost[] } | WordPressPost[]>('projects.json', lang);
+  //   const projectsList = Array.isArray(projects) ? projects : projects?.data;
+  //   if (projectsList) {
+  //     const post = projectsList.find(p => p.id === postId);
+  //     if (post?.siteSettings) return post.siteSettings;
+  //   }
 
-    const pages = await fetchLocalJson<{ siteSettings?: any; data?: WordPressPage[] } | WordPressPage[]>('pages.json', lang);
-    const pagesList = Array.isArray(pages) ? pages : pages?.data;
-    if (pagesList) {
-      const page = pagesList.find(p => p.id === postId);
-      if (page?.siteSettings) return page.siteSettings;
-    }
-  }
+  //   const pages = await fetchLocalJson<{ siteSettings?: any; data?: WordPressPage[] } | WordPressPage[]>('pages.json', lang);
+  //   const pagesList = Array.isArray(pages) ? pages : pages?.data;
+  //   if (pagesList) {
+  //     const page = pagesList.find(p => p.id === postId);
+  //     if (page?.siteSettings) return page.siteSettings;
+  //   }
+  // }
 
   // Zwróć ustawienia dla tego języka lub globalne
   const data = await fetchLocalJson<Record<string, any>>('siteSettings.json', lang);
-  console.log(`Loaded site settings for lang "${lang}":`, data);
   return data || {};
 }
 

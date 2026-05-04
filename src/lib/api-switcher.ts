@@ -45,8 +45,8 @@ export async function getMenuItems(menuSlug: string, lang?: string) {
   return api.getMenuItems(menuSlug, lang);
 }
 
-export async function getSiteSettings(postId?: number) {
-  return api.getSiteSettings(postId);
+export async function getSiteSettings(postId?: number, lang?: string) {
+  return api.getSiteSettings(postId, lang);
 }
 
 export async function getDictionary(lang?: string) {

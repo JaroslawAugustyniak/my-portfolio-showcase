@@ -238,13 +238,16 @@ export async function getMenuItems(menuSlug: string, lang?: string): Promise<Men
   return data || [];
 }
 
-export async function getSiteSettings(postId?: number): Promise<Record<string, any>> {
+export async function getSiteSettings(postId?: number, lang?: string): Promise<Record<string, any>> {
   try {
     const baseUrl = API_URL.replace('/wp/v2', '');
     const url = new URL(`${baseUrl}/moje-api/v1/info`);
 
     if (postId) {
       url.searchParams.append('id', String(postId));
+    }
+    if (lang) {
+      url.searchParams.append('lang', lang);
     }
 
     const response = await fetch(url.toString(), { headers });

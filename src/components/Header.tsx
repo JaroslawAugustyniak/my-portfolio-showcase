@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
-import { getMenuItems, getSiteSettings, getPostBySlug } from '@/lib/api-switcher';
+import { getMenuItems, getSiteSettings } from '@/lib/api-switcher';
 import type { MenuItem } from "@/lib/wordpress.types";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -23,21 +23,9 @@ const Header = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        // Check if we're on a project detail page
-        const projektMatch = location.pathname.match(/\/projekt\/([^/]+)/);
-        let postId: number | undefined;
+        // Fetch settings
+        const settings = await getSiteSettings(undefined, currentLanguage?.slug);
 
-        if (projektMatch) {
-          const slug = projektMatch[1];
-          const post = await getPostBySlug(slug, 'posts', currentLanguage?.slug);
-          if (post) {
-            postId = post.id;
-          }
-        }
-
-        // Fetch settings with or without post ID
-        const settings = await getSiteSettings(postId);
-        
         if (settings.logo) {
           setLogoUrl(settings.logo);
         }
@@ -48,31 +36,81 @@ const Header = () => {
           }
         }
 
-        if (settings.name) {
-          document.title = settings.name;
+        // Extract slug from current path
+        let pageSlug: string | null = 'strona-glowna';
+        let pathWithoutLang = location.pathname;
 
+        // Remove language prefix if present
+        if (currentLanguage?.slug && pathWithoutLang.startsWith(`/${currentLanguage.slug}/`)) {
+          pathWithoutLang = pathWithoutLang.replace(`/${currentLanguage.slug}`, '');
+        } else if (currentLanguage?.slug && pathWithoutLang.startsWith(`/${currentLanguage.slug}`)) {
+          pathWithoutLang = pathWithoutLang.replace(`/${currentLanguage.slug}`, '');
+        }
+
+        // Remove leading slash
+        pathWithoutLang = pathWithoutLang.replace(/^\//, '');
+
+        //remove ending slash
+        pathWithoutLang = pathWithoutLang.replace(/\/$/, '');
+
+        // Extract slug
+        if (pathWithoutLang.startsWith('projekt/')) {
+          pageSlug = pathWithoutLang.replace(/^projekt\//, '');
+        } else if (pathWithoutLang === 'portfolio') {
+          pageSlug = 'portfolio';
+        } else if (pathWithoutLang === '') {
+          pageSlug = 'strona-glowna';
+        } else {
+          pageSlug = pathWithoutLang;
+        }
+
+
+        console.log('Header debug:', { pathname: location.pathname, pathWithoutLang, pageSlug, currentLang: currentLanguage?.slug, defaultLang: defaultLanguage?.slug });
+
+        // Find page or post settings by slug
+        let pageSettings = null;
+        if (settings.pages) {
+          pageSettings = settings.pages.find((p: any) => p.slug === pageSlug);
+        }
+        if (!pageSettings && settings.posts) {
+          pageSettings = settings.posts.find((p: any) => p.slug === pageSlug);
+        }
+
+        console.log(pageSettings);
+
+        // Use page-specific settings or fallback to global settings
+        const title = pageSettings?.title || settings.title;
+        const description = pageSettings?.description || settings.description;
+        const image = pageSettings?.image || settings.image;
+
+        if (title) {
+          document.title = title;
           const og_title = document.querySelector("meta[property='og:title']");
           if (og_title) {
-            og_title.setAttribute('content', settings.name);
+            og_title.setAttribute('content', title);
           }
         }
 
-        if (settings?.seo?.og_image) {
+        if (image) {
           const og_image = document.querySelector("meta[property='og:image']");
           const tw_image = document.querySelector("meta[name='twitter:image']");
           if (og_image) {
-            og_image.setAttribute('content', settings.seo.og_image[0].url);
+            og_image.setAttribute('content', image);
           }
           if (tw_image) {
-            tw_image.setAttribute('content', settings.seo.og_image[0].url);
+            tw_image.setAttribute('content', image);
           }
         }
 
- 
-
-        const og_description = document.querySelector("meta[property='og:description']");
-        if (og_description) {
-          og_description.setAttribute('content', settings.description);
+        if (description) {
+          const metaDescription = document.querySelector("meta[name='description']");
+          if (metaDescription) {
+            metaDescription.setAttribute('content', description);
+          }
+          const og_description = document.querySelector("meta[property='og:description']");
+          if (og_description) {
+            og_description.setAttribute('content', description);
+          }
         }
       } catch (err) {
         console.error(err);
@@ -80,7 +118,7 @@ const Header = () => {
     };
 
     fetchSettings();
-  }, [location.pathname, currentLanguage]);
+  }, [location.pathname, currentLanguage, defaultLanguage]);
 
   const getPath = (url: string) => {
     // Handle anchor links and regular paths
