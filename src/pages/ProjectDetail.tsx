@@ -42,6 +42,7 @@ const ProjectDetail = () => {
   const { currentLanguage } = useLanguage();
   const [project, setProject] = useState<Project | null | undefined>(undefined);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const [lightboxImages, setLightboxImages] = useState<{ url: string; alt: string }[]>([]);
 
   useEffect(() => {
     if (!slug || !currentLanguage) {
@@ -65,13 +66,22 @@ const ProjectDetail = () => {
 
   const close = useCallback(() => setLightboxIdx(null), []);
   const prev = useCallback(() => {
-    if (!project) return;
-    setLightboxIdx((i) => (i === null ? null : (i - 1 + project?.acf?.galeria.length) % project?.acf?.galeria.length));
-  }, [project]);
+    const n = lightboxImages.length;
+    setLightboxIdx((i) => (i === null || !n ? null : (i - 1 + n) % n));
+  }, [lightboxImages]);
   const next = useCallback(() => {
-    if (!project) return;
-    setLightboxIdx((i) => (i === null ? null : (i + 1) % project?.acf?.galeria.length));
-  }, [project]);
+    const n = lightboxImages.length;
+    setLightboxIdx((i) => (i === null || !n ? null : (i + 1) % n));
+  }, [lightboxImages]);
+
+  // Klik w dowolny <img> w treści projektu (HTML z WordPressa) otwiera lightbox
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName !== "IMG") return;
+    const imgs = Array.from(e.currentTarget.querySelectorAll("img"));
+    setLightboxImages(imgs.map((im) => ({ url: im.currentSrc || im.src, alt: im.alt })));
+    setLightboxIdx(imgs.indexOf(target as HTMLImageElement));
+  };
 
   useEffect(() => {
     if (lightboxIdx === null) return;
@@ -144,6 +154,7 @@ const ProjectDetail = () => {
             })}
           </p>
 
+          {project.featuredImage && project.acf.hide_featured_image === false && (
           <div className="rounded-xl overflow-hidden card-shadow mb-10">
             <img
               src={project.featuredImage}
@@ -151,8 +162,9 @@ const ProjectDetail = () => {
               className="w-full max-h-[70vh] object-cover"
             />
           </div>
+          )}
 
-          <div className="text-body text-lg leading-relaxed mb-8 max-w-3xl content" dangerouslySetInnerHTML={{ __html: project?.description || '' }} />
+          <div className="text-body text-lg leading-relaxed mb-8 max-w-full content [&_img]:cursor-zoom-in" onClick={handleContentClick} dangerouslySetInnerHTML={{ __html: project?.description || '' }} />
 
           <div className="flex flex-wrap gap-2 mb-8">
             {project.tags.map((tag) => (
@@ -184,7 +196,10 @@ const ProjectDetail = () => {
                 {project.acf?.galeria.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setLightboxIdx(i)}
+                    onClick={() => {
+                      setLightboxImages(project.acf.galeria.map((g, n) => ({ url: g.url, alt: `${project.title} - ${n + 1}` })));
+                      setLightboxIdx(i);
+                    }}
                     className="group block w-full mb-4 break-inside-avoid rounded-xl overflow-hidden card-shadow transition-smooth hover:card-shadow-hover focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <img
@@ -236,14 +251,14 @@ const ProjectDetail = () => {
           </button>
 
           <img
-            src={project?.acf?.galeria[lightboxIdx]?.url}
-            alt={`${project.title} - ${lightboxIdx + 1}`}
+            src={lightboxImages[lightboxIdx]?.url}
+            alt={lightboxImages[lightboxIdx]?.alt}
             className="max-w-full max-h-[88vh] object-contain rounded-lg shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-card/80 border border-border font-mono text-xs text-muted-foreground">
-            {lightboxIdx + 1} / {project?.acf?.galeria.length}
+            {lightboxIdx + 1} / {lightboxImages.length}
           </div>
         </div>
       )}

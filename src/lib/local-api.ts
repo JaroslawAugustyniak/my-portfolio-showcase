@@ -78,7 +78,9 @@ export async function getPortfolioPosts(lang?: string): Promise<WordPressPost[]>
 
 export async function getRecommendedPortfolioPosts(lang?: string): Promise<WordPressPost[]> {
   // Wszystkie projekty z projects.json to już recommended category
-  return getPosts(undefined, undefined, lang);
+  const posts = getPosts(undefined, undefined, lang);
+  console.log(posts);
+  return posts;
 }
 
 export async function getPostsByCategory(_categorySlugs: string[], lang?: string): Promise<WordPressPost[]> {

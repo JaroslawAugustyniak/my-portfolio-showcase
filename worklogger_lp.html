@@ -1,0 +1,425 @@
+<div id="worklogger_lp">
+<style>
+/* ===== Wszystkie style są zawężone do #worklogger_lp – nic nie wycieka do strony nadrzędnej ===== */
+#worklogger_lp{
+  --wl-bg:#f6f8fb; --wl-surface:#ffffff; --wl-surface2:#eef3f9; --wl-text:#14202e; --wl-muted:#5a6b7d;
+  --wl-line:#dbe3ec; --wl-accent:#22526f; --wl-accent2:#173b52; --wl-accent-soft:#e1eef6;
+  --wl-ok:#1f8a5b; --wl-warn:#c77a0a; --wl-danger:#c0392b; --wl-violet:#6b4fbb;
+  --wl-shadow:0 10px 30px rgba(20,32,46,.08);
+  container-type:inline-size; container-name:wl;
+  display:block; width:100%; max-width:100%; margin:0; padding:0; box-sizing:border-box;
+  color:var(--wl-text); overflow:hidden;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px; line-height:1.6; text-align:left; -webkit-font-smoothing:antialiased;
+}
+@media (prefers-color-scheme: dark){
+  #worklogger_lp{
+    --wl-bg:#0f1720; --wl-surface:#17222e; --wl-surface2:#1d2b3a; --wl-text:#e8eef5; --wl-muted:#9aabbd;
+    --wl-line:#2a3a4b; --wl-accent:#5fb0dc; --wl-accent2:#9ad0ee; --wl-accent-soft:#17323f;
+    --wl-ok:#3fc08a; --wl-warn:#e9a23b; --wl-danger:#ef6a5b; --wl-violet:#a28cf0;
+    --wl-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+}
+#worklogger_lp *,#worklogger_lp *::before,#worklogger_lp *::after{box-sizing:border-box}
+#worklogger_lp h1,#worklogger_lp h2,#worklogger_lp h3,#worklogger_lp h4,#worklogger_lp p,#worklogger_lp ul,#worklogger_lp ol,#worklogger_lp figure,#worklogger_lp table{margin:0;padding:0}
+#worklogger_lp ul,#worklogger_lp ol{list-style:none}
+#worklogger_lp .p-bigger{font-size: 18px;}
+#worklogger_lp svg{display:block;max-width:100%}
+
+/* --- layout --- */
+#worklogger_lp .wl-sec{padding:64px 32px}
+#worklogger_lp .wl-wrap{max-width:1080px;margin:0 auto}
+#worklogger_lp .wl-eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--wl-accent);margin-bottom:12px}
+#worklogger_lp h1{font-size:clamp(34px,6cqw,56px);line-height:1.08;font-weight:800;letter-spacing:-.02em}
+#worklogger_lp h2{font-size:clamp(26px,4cqw,38px);line-height:1.15;font-weight:800;letter-spacing:-.015em;margin-bottom:14px}
+#worklogger_lp h3{font-size:22px;line-height:1.25;font-weight:700;margin-bottom:10px}
+#worklogger_lp h4{font-size:15px;font-weight:700;margin-bottom:6px}
+#worklogger_lp p{color:var(--wl-muted)}
+#worklogger_lp .lead{font-size:18px;max-width:62ch}
+#worklogger_lp .wl-center{text-align:center}
+#worklogger_lp .wl-center .lead{margin-left:auto;margin-right:auto}
+#worklogger_lp .grad{background:linear-gradient(90deg,var(--wl-accent),var(--wl-violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* --- hero --- */
+#worklogger_lp .wl-hero{padding:72px 32px 56px}
+#worklogger_lp .wl-hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+#worklogger_lp .wl-hero p.lead{margin:18px 0 28px}
+#worklogger_lp .wl-btns{display:flex;flex-wrap:wrap;gap:12px}
+#worklogger_lp .wl-btn{display:inline-block;padding:12px 22px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;
+  background:var(--wl-accent);color:#fff;border:1px solid var(--wl-accent);transition:transform .15s,background .15s}
+#worklogger_lp .wl-btn:hover{background:var(--wl-accent2);transform:translateY(-1px)}
+#worklogger_lp .wl-btn.ghost{background:transparent;color:var(--wl-text);border-color:var(--wl-line)}
+#worklogger_lp .wl-btn.ghost:hover{background:var(--wl-surface2)}
+#worklogger_lp .wl-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+#worklogger_lp .wl-chip{font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;background:var(--wl-surface);border:1px solid var(--wl-line);color:var(--wl-muted)}
+
+/* --- ramki na zrzuty ekranu (podmień .wl-ph na <img src="..." alt="...">) --- */
+#worklogger_lp .wl-shot{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--wl-line);background:var(--wl-surface);box-shadow:var(--wl-shadow)}
+#worklogger_lp .wl-shot .bar{display:flex;gap:6px;align-items:center;padding:10px 14px;background:var(--wl-surface2);border-bottom:1px solid var(--wl-line)}
+#worklogger_lp .wl-shot .bar i{width:10px;height:10px;border-radius:50%;display:block}
+#worklogger_lp .wl-shot .bar i:nth-child(1){background:#ff6058}
+#worklogger_lp .wl-shot .bar i:nth-child(2){background:#ffbd2e}
+#worklogger_lp .wl-shot .bar i:nth-child(3){background:#28c941}
+#worklogger_lp .wl-shot img{display:block;width:100%;height:auto}
+#worklogger_lp .wl-ph{aspect-ratio:16/10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center;
+  font-size:13px;font-weight:600;color:var(--wl-muted);
+  background:repeating-linear-gradient(135deg,transparent 0 14px,var(--wl-surface2) 14px 15px)}
+#worklogger_lp .wl-ph svg{width:36px;height:36px;color:var(--wl-accent);opacity:.8}
+#worklogger_lp .wl-ph.tall{aspect-ratio:9/16}
+#worklogger_lp .wl-duo{display:grid;grid-template-columns:1fr;gap:16px;align-items:end}
+
+/* --- problem --- */
+#worklogger_lp .wl-cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}
+#worklogger_lp .wl-card{background:var(--wl-surface);border:1px solid var(--wl-line);border-radius:14px;padding:22px}
+#worklogger_lp .wl-card .ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:var(--wl-accent-soft);color:var(--wl-accent)}
+#worklogger_lp .wl-card .ico svg{width:22px;height:22px}
+#worklogger_lp .wl-card.bad .ico{background:color-mix(in srgb,var(--wl-danger) 14%,transparent);color:var(--wl-danger)}
+
+/* --- statusy --- */
+#worklogger_lp .wl-pipe{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 8px}
+#worklogger_lp .wl-st{font-size:13.5px;font-weight:700;padding:8px 16px;border-radius:999px;border:1px solid}
+#worklogger_lp .wl-st.s1{color:var(--wl-muted);background:var(--wl-surface2);border-color:var(--wl-line)}
+#worklogger_lp .wl-st.s2{color:var(--wl-accent);background:var(--wl-accent-soft);border-color:var(--wl-accent)}
+#worklogger_lp .wl-st.s3{color:var(--wl-ok);background:color-mix(in srgb,var(--wl-ok) 13%,transparent);border-color:var(--wl-ok)}
+#worklogger_lp .wl-st.s4{color:var(--wl-warn);background:color-mix(in srgb,var(--wl-warn) 13%,transparent);border-color:var(--wl-warn)}
+#worklogger_lp .wl-arrow{color:var(--wl-muted);font-weight:700}
+#worklogger_lp .wl-pipe-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--wl-muted);margin-top:14px}
+
+/* --- wiersze funkcji --- */
+#worklogger_lp .wl-feat{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:36px 0}
+#worklogger_lp .wl-feat.rev .wl-txt{order:2}
+#worklogger_lp .wl-num{display:inline-flex;width:34px;height:34px;border-radius:50%;align-items:center;justify-content:center;font-weight:800;font-size:14px;background:var(--wl-accent);color:#fff;margin-bottom:14px}
+#worklogger_lp .wl-list{margin-top:14px;display:grid;gap:8px}
+#worklogger_lp .wl-list li{position:relative;padding-left:26px;color:var(--wl-muted);font-size:15px}
+#worklogger_lp .wl-list li::before{content:"";position:absolute;left:0;top:7px;width:14px;height:14px;border-radius:50%;background:var(--wl-accent-soft);box-shadow:inset 0 0 0 4px var(--wl-accent)}
+#worklogger_lp .wl-stack-shots{display:grid;gap:16px}
+#worklogger_lp .wl-stack-shots.two{grid-template-columns:1fr 1fr}
+
+/* --- role --- */
+#worklogger_lp .wl-roles{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:30px}
+#worklogger_lp .wl-role{background:var(--wl-surface2);border:1px solid var(--wl-line);border-radius:14px;padding:20px;border-top:4px solid var(--wl-accent)}
+#worklogger_lp .wl-role:nth-child(2){border-top-color:var(--wl-violet)}
+#worklogger_lp .wl-role p{font-size:14.5px}
+
+/* --- siatka bezpieczeństwa --- */
+#worklogger_lp .wl-sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+#worklogger_lp .wl-sec-item{display:flex;gap:12px;align-items:flex-start;padding:16px;border:1px solid var(--wl-line);border-radius:12px;background:var(--wl-surface)}
+#worklogger_lp .wl-sec-item svg{flex:none;width:22px;height:22px;color:var(--wl-ok);margin-top:2px}
+#worklogger_lp .wl-sec-item p{font-size:14.5px;color:var(--wl-text)}
+
+/* --- CTA --- */
+#worklogger_lp .wl-cta{padding:56px 32px;text-align:center;color:#fff;background:linear-gradient(135deg,#173b52,#22526f 60%,#3b4a9a)}
+#worklogger_lp .wl-cta h2{color:#fff}
+#worklogger_lp .wl-cta p{color:rgba(255,255,255,.85);margin:0 auto 22px;max-width:56ch}
+#worklogger_lp .wl-cta .wl-btn{background:#fff;color:#173b52;border-color:#fff}
+#worklogger_lp .wl-cta .wl-btns{justify-content:center}
+
+/* --- część techniczna --- */
+#worklogger_lp .wl-tech-head{padding:64px 32px 8px;text-align:center}
+#worklogger_lp .wl-stack{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+#worklogger_lp .wl-stack .wl-card{padding:20px}
+#worklogger_lp .wl-stack h4{color:var(--wl-accent);text-transform:uppercase;letter-spacing:.08em;font-size:12px;margin-bottom:12px}
+#worklogger_lp .wl-tags{display:flex;flex-wrap:wrap;gap:6px}
+#worklogger_lp .wl-tag{font-size:13px;padding:4px 10px;border-radius:8px;background:var(--wl-surface2);border:1px solid var(--wl-line);color:var(--wl-text)}
+#worklogger_lp .wl-flow{counter-reset:wl;display:grid;gap:14px;margin-top:28px}
+#worklogger_lp .wl-flow li{counter-increment:wl;display:grid;grid-template-columns:44px 1fr;gap:16px;padding:18px;background:var(--wl-surface);border:1px solid var(--wl-line);border-radius:12px}
+#worklogger_lp .wl-flow li::before{content:counter(wl);width:36px;height:36px;border-radius:10px;background:var(--wl-accent-soft);color:var(--wl-accent);font-weight:800;display:flex;align-items:center;justify-content:center}
+#worklogger_lp .wl-flow p{font-size:14.5px}
+#worklogger_lp .wl-flow b{color:var(--wl-text)}
+#worklogger_lp code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;padding:1px 6px;border-radius:5px;background:var(--wl-surface2);border:1px solid var(--wl-line);color:var(--wl-text)}
+#worklogger_lp table.wl-tbl{width:100%;border-collapse:collapse;margin-top:18px;font-size:14.5px;background:var(--wl-surface);border-radius:12px;overflow:hidden}
+#worklogger_lp .wl-tbl th,#worklogger_lp .wl-tbl td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--wl-line);color:var(--wl-text)}
+#worklogger_lp .wl-tbl th{background:var(--wl-surface2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--wl-muted)}
+#worklogger_lp .wl-tbl tr:last-child td{border-bottom:0}
+#worklogger_lp .wl-cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+#worklogger_lp .wl-diagram{margin-top:28px;background:var(--wl-surface);border:1px solid var(--wl-line);border-radius:14px;padding:18px;overflow-x:auto}
+#worklogger_lp .wl-diagram svg{min-width:640px;width:100%;height:auto}
+#worklogger_lp .wl-dg-box{fill:var(--wl-surface2);stroke:var(--wl-line);stroke-width:1.5}
+#worklogger_lp .wl-dg-box.acc{fill:var(--wl-accent-soft);stroke:var(--wl-accent)}
+#worklogger_lp .wl-dg-box.ok{fill:color-mix(in srgb,var(--wl-ok) 14%,transparent);stroke:var(--wl-ok)}
+#worklogger_lp .wl-dg-box.vio{fill:color-mix(in srgb,var(--wl-violet) 14%,transparent);stroke:var(--wl-violet)}
+#worklogger_lp .wl-dg-t{fill:var(--wl-text);font:700 13px system-ui,sans-serif}
+#worklogger_lp .wl-dg-s{fill:var(--wl-muted);font:500 11px system-ui,sans-serif}
+#worklogger_lp .wl-dg-l{stroke:var(--wl-muted);stroke-width:1.6;fill:none}
+
+/* --- responsywność względem szerokości KONTENERA --- */
+@container wl (max-width:860px){
+  #worklogger_lp .wl-hero-grid,#worklogger_lp .wl-feat,#worklogger_lp .wl-cols2{grid-template-columns:1fr}
+  #worklogger_lp .wl-feat{gap:24px}
+  #worklogger_lp .wl-feat.rev .wl-txt{order:0}
+  #worklogger_lp .wl-cards3,#worklogger_lp .wl-sec-grid{grid-template-columns:1fr 1fr}
+}
+@container wl (max-width:560px){
+  #worklogger_lp .wl-sec,#worklogger_lp .wl-hero,#worklogger_lp .wl-cta,#worklogger_lp .wl-tech-head{padding-left:18px;padding-right:18px}
+  #worklogger_lp .wl-sec{padding-top:44px;padding-bottom:44px}
+  #worklogger_lp .wl-cards3,#worklogger_lp .wl-sec-grid,#worklogger_lp .wl-roles,#worklogger_lp .wl-stack,#worklogger_lp .wl-stack-shots.two{grid-template-columns:1fr}
+  #worklogger_lp .wl-flow li{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  #worklogger_lp .wl-card,#worklogger_lp .wl-role{transition:transform .2s,box-shadow .2s}
+  #worklogger_lp .wl-card:hover,#worklogger_lp .wl-role:hover{transform:translateY(-3px);box-shadow:var(--wl-shadow)}
+}
+</style>
+
+<!-- ================= CZĘŚĆ 1: LANDING ================= -->
+<header class="wl-hero">
+  <div class="wl-wrap wl-hero-grid">
+    <div>
+      <span class="wl-eyebrow">Czas pracy, projekty i rozliczenia</span>
+      <h1><span class="grad">Wiesz, ile zarabiasz. Klient widzi, za co płaci.</span></h1>
+      <p class="lead">WorkLogger to aplikacja dla freelancerów i małych agencji. Rejestrujesz godziny w kalendarzu, przypisujesz je do projektów, a system sam liczy wartość pracy, wpłaty i różnicę między tym, co zrobione, a tym, co zapłacone.</p>
+      <div class="wl-btns">
+        <a class="wl-btn" href="https://worklogger.click/" target="_blank">Sprawdź demo</a>
+        <a class="wl-btn ghost" href="#wl-funkcje">Zobacz funkcje</a>
+      </div>
+      <p><br><span class="p-bigger">Dane do logowania:</span><br>
+      LOGIN: <strong>demo@worklogger.click</strong><br>
+      PASSWORD: <strong>demo123</strong></p>
+      <div class="wl-chips">
+        <span class="wl-chip">PWA</span><span class="wl-chip">PL / EN</span><span class="wl-chip">Portal klienta</span>
+      </div>
+    </div>
+    <div class="wl-duo">
+      <figure class="wl-shot">
+        <img src="/wp-content/uploads/2026/10/wl_dashboard.png" alt="Worklogger Dashboard" class="img-fluid"/></figure>
+    </div>
+  </div>
+</header>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <div class="wl-center">
+      <span class="wl-eyebrow">Problem</span>
+      <h2>Godziny w notatniku, faktury w głowie</h2>
+      <p class="lead">Nie wiesz, który projekt się opłaca. Klient pyta „ile już wyszło?”, a Ty zbierasz dane z kalendarza, arkusza i wiadomości. Płatności po fakcie trudno dopasować do pracy.</p>
+    </div>
+    <div class="wl-cards3">
+      <div class="wl-card bad"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>Gubione godziny</h4><p>Czas pracy zapisany z pamięci albo wcale, więc rozliczenia są zaniżone.</p></div>
+      <div class="wl-card bad"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4zM4 9h16M9 4v16"/></svg></div><h4>Rozproszone dane</h4><p>Stawki, zadania i wpłaty w kilku miejscach, bez jednego obrazu projektu.</p></div>
+      <div class="wl-card bad"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.01"/></svg></div><h4>Brak przejrzystości</h4><p>Klient nie widzi, za co płaci, więc każda faktura wymaga tłumaczenia.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec" id="wl-funkcje">
+  <div class="wl-wrap">
+    <div class="wl-center">
+      <span class="wl-eyebrow">Jedno narzędzie</span>
+      <h2>Od pierwszej godziny do rozliczonego projektu</h2>
+    </div>
+
+    <!-- 1 -->
+    <div class="wl-feat">
+      <div class="wl-txt">
+        <span class="wl-num">1</span>
+        <h3>Kalendarz, który liczy za Ciebie</h3>
+        <p>Widok tygodnia z wpisami kolorowanymi według projektu. Dodajesz wpis, a wartość wylicza się z godzin i stawki. Suma godzin dnia i tygodnia jest zawsze na wierzchu.</p>
+        <ul class="wl-list"><li>Widok tygodniowy z nawigacją (FullCalendar)</li><li>Automatyczna wartość wpisu: godziny × stawka</li><li>Edycja i usuwanie wpisów, kolor projektu</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_calendar.png" alt="Worklogger Calendar" class="img-fluid"/></figure>
+    </div>
+
+    <!-- 2 -->
+    <div class="wl-feat rev">
+      <div class="wl-txt">
+        <span class="wl-num">2</span>
+        <h3>Klienci i projekty ze stawkami</h3>
+        <p>Klient ma domyślną stawkę godzinową, a projekt może mieć własną. Każdy projekt dostaje kolor, status aktywny lub nieaktywny oraz status płatności wyliczany automatycznie.</p>
+        <div class="wl-pipe-label">Status płatności projektu</div>
+        <div class="wl-pipe"><span class="wl-st s1">Nieopłacony</span><span class="wl-arrow">→</span><span class="wl-st s4">Częściowo opłacony</span><span class="wl-arrow">→</span><span class="wl-st s3">Opłacony</span></div>
+        <ul class="wl-list"><li>Filtrowanie po kliencie, wyszukiwanie, sortowanie po nazwie, stawce i wartości</li><li>Paginacja: 10, 25, 50 lub 100 pozycji</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_projects.png" alt="Worklogger Projects" class="img-fluid"/></figure>
+    </div>
+
+    <!-- 3 -->
+    <div class="wl-feat">
+      <div class="wl-txt">
+        <span class="wl-num">3</span>
+        <h3>Zadania, które zamieniają się w godziny</h3>
+        <p>Prowadź zadania w projektach i zmieniaj ich status w trakcie pracy. Skończone zadanie jednym kliknięciem trafia do kalendarza jako wpis czasu: potwierdzasz godziny i opis, a wpis gotowy.</p>
+        <div class="wl-pipe"><span class="wl-st s1">Do zrobienia</span><span class="wl-arrow">→</span><span class="wl-st s2">W toku</span><span class="wl-arrow">→</span><span class="wl-st s3">Zrobione</span></div>
+        <ul class="wl-list"><li>Akcja „Zapisz w kalendarzu”</li><li>Daty rozpoczęcia i zakończenia zadania</li><li>Filtr po projekcie</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_zadania.png" alt="Worklogger Tasks" class="img-fluid"/></figure>
+    </div>
+
+    <!-- 4 -->
+    <div class="wl-feat rev">
+      <div class="wl-txt">
+        <span class="wl-num">4</span>
+        <h3>Przychody i koszty</h3>
+        <p>Wpłaty dopisujesz do projektu, a koszty rejestrujesz osobno. Dzięki temu widzisz, ile pracy czeka na płatność, a ile już jest na koncie. Przypomnienia pilnują terminów, o których łatwo zapomnieć.</p>
+        <ul class="wl-list"><li>Ręczne wpłaty powiązane z projektem</li><li>Rejestr kosztów per projekt lub klient</li><li>Moduł przypomnień</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_incomes_and_costs.png" alt="Worklogger Tasks" class="img-fluid"/></figure>
+    </div>
+
+    <!-- 5 -->
+    <div class="wl-feat">
+      <div class="wl-txt">
+        <span class="wl-num">5</span>
+        <h3>Raporty: plan kontra rzeczywistość</h3>
+        <p>Wykres przychodów w wybranym okresie i raport per projekt: oczekiwany przychód, faktyczne wpłaty i różnica. Kliknij projekt, żeby zobaczyć godziny, wpisy czasu i płatności.</p>
+        <ul class="wl-list"><li>Zakres dat: miesiąc, 3 i 6 miesięcy, rok</li><li>Filtr waluty i formatowanie kwot</li><li>Widok szczegółowy projektu</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_raport.png" alt="Worklogger Tasks" class="img-fluid"/></figure>
+    </div>
+
+    <!-- 6 -->
+    <div class="wl-feat rev">
+      <div class="wl-txt">
+        <span class="wl-num">6</span>
+        <h3>Portal klienta bez logowania</h3>
+        <p>Wysyłasz klientowi unikalny link. Klient widzi swoje projekty, przepracowane godziny i historię płatności, a Ty nie odpowiadasz na pytania „ile już wyszło?”.</p>
+        <ul class="wl-list"><li>Dostęp przez unikalny link, bez zakładania konta</li><li>Tylko do odczytu: projekty, wpisy czasu, płatności</li><li>Wykres przychodów i przejrzysta wycena</li></ul>
+      </div>
+      <figure class="wl-shot"><div class="bar"><i></i><i></i><i></i></div><img src="/wp-content/uploads/2026/10/wl_portal.png" alt="Worklogger Tasks" class="img-fluid"/></figure>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <div class="wl-center">
+      <span class="wl-eyebrow">7 · Dashboard</span>
+      <h2>Najważniejsze liczby na start</h2>
+      <p class="lead">Po zalogowaniu widzisz liczbę klientów, projektów, przepracowanych godzin i łączny przychód, a pod spodem wykres miesięczny z porównaniem okresów.</p>
+    </div>
+    <div class="wl-cards3" style="grid-template-columns:repeat(4,1fr)">
+      <div class="wl-card"><h4>Klienci</h4><p>Ilu masz aktywnych zleceniodawców.</p></div>
+      <div class="wl-card"><h4>Projekty</h4><p>Nad czym aktualnie pracujesz.</p></div>
+      <div class="wl-card"><h4>Godziny</h4><p>Łączny czas zapisany w kalendarzu.</p></div>
+      <div class="wl-card"><h4>Przychód</h4><p>Suma wpłat w wybranym okresie.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <div class="wl-center">
+      <span class="wl-eyebrow">8 · Dla kogo</span>
+      <h2>Dwie perspektywy, jeden zestaw danych</h2>
+      <p class="lead">Właściciel zarządza wszystkim. Klient dostaje wgląd tylko w to, co go dotyczy.</p>
+    </div>
+    <div class="wl-roles">
+      <div class="wl-role"><h4>Właściciel</h4><p>Klienci, projekty, zadania, kalendarz, wpłaty, koszty, raporty i zapraszanie klientów do portalu. Idealne dla freelancerów, konsultantów i małych agencji.</p></div>
+      <div class="wl-role"><h4>Użytkownik portalu</h4><p>Przegląda przypisane projekty, wpisy czasu i płatności. Nie edytuje niczego i nie widzi danych innych klientów.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <div class="wl-center">
+      <span class="wl-eyebrow">9 · Bezpieczeństwo</span>
+      <h2>Twoje dane i dane Twoich klientów</h2>
+    </div>
+    <div class="wl-sec-grid">
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Rejestracja z weryfikacją e-mail kodem 6-cyfrowym</p></div>
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Hasła przechowywane wyłącznie w postaci hasha</p></div>
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Reset hasła przez jednorazowy token z ograniczoną ważnością</p></div>
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Zaszyfrowane sesje (NextAuth.js)</p></div>
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Portal klienta chroniony unikalnym linkiem</p></div>
+      <div class="wl-sec-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4 10-10"/></svg><p>Zapytania do bazy przez Prisma, bez surowego SQL z danych użytkownika</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec">
+  <div class="wl-wrap wl-center">
+    <span class="wl-eyebrow">10 · Wygoda</span>
+    <h2>Po polsku, po angielsku</h2>
+    <p class="lead">Interfejs w pełni przetłumaczony (PL i EN), z wyborem waluty per użytkownik i motywem zapamiętywanym między sesjami. Aplikację zainstalujesz na telefonie jak natywną (PWA), a menu i tabele dostosowują się do ekranu.</p>
+  </div>
+</section>
+
+<section class="wl-cta">
+  <div class="wl-wrap">
+    <h2>Zacznij rejestrować czas, który zarabia</h2>
+    <p>Dodaj pierwszego klienta, utwórz projekt i zapisz pierwszą godzinę. Zajmie to kilka minut.</p>
+    <div class="wl-btns"><a class="wl-btn" href="https://worklogger.click/register" target="_blank">Załóż konto</a></div>
+  </div>
+</section>
+
+<!-- ================= CZĘŚĆ 2: TECHNICZNA ================= -->
+<div class="wl-tech-head">
+  <div class="wl-wrap">
+    <span class="wl-eyebrow">Część techniczna</span>
+    <h2>Jak to działa pod spodem</h2>
+    <p class="lead" style="margin:0 auto">Jedna aplikacja Next.js z serwerowym renderowaniem i route handlerami, baza MySQL przez Prisma, całość w kontenerach Dockera.</p>
+  </div>
+</div>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <h3>Stack technologiczny</h3>
+    <div class="wl-stack">
+      <div class="wl-card"><h4>Frontend</h4><div class="wl-tags"><span class="wl-tag">Next.js 16 (App Router)</span><span class="wl-tag">React 19</span><span class="wl-tag">TypeScript 5</span><span class="wl-tag">Tailwind CSS 4</span></div></div>
+      <div class="wl-card"><h4>Backend</h4><div class="wl-tags"><span class="wl-tag">Next.js Route Handlers</span><span class="wl-tag">Server Components</span><span class="wl-tag">Node.js</span></div></div>
+      <div class="wl-card"><h4>Dane</h4><div class="wl-tags"><span class="wl-tag">MySQL</span><span class="wl-tag">Prisma 7</span></div></div>
+      <div class="wl-card"><h4>Autoryzacja</h4><div class="wl-tags"><span class="wl-tag">NextAuth.js 4</span><span class="wl-tag">Kody e-mail</span><span class="wl-tag">Tokeny resetu hasła</span></div></div>
+      <div class="wl-card"><h4>UI / UX</h4><div class="wl-tags"><span class="wl-tag">lucide-react</span><span class="wl-tag">SweetAlert2</span><span class="wl-tag">Motyw jasny / ciemny</span></div></div>
+      <div class="wl-card"><h4>Wizualizacje</h4><div class="wl-tags"><span class="wl-tag">Recharts</span><span class="wl-tag">FullCalendar</span></div></div>
+      <div class="wl-card"><h4>i18n i PWA</h4><div class="wl-tags"><span class="wl-tag">next-intl (PL / EN)</span><span class="wl-tag">Web App Manifest</span><span class="wl-tag">Service Worker</span></div></div>
+      <div class="wl-card"><h4>Płatności i infrastruktura</h4><div class="wl-tags"><span class="wl-tag">Stripe</span><span class="wl-tag">Docker</span><span class="wl-tag">Docker Compose</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="wl-sec">
+  <div class="wl-wrap">
+    <h3>Architektura</h3>
+    <p>Przeglądarka rozmawia z jedną aplikacją Next.js. Strony renderują się po stronie serwera i pobierają dane przez Prisma, a mutacje przechodzą przez route handlery.</p>
+    <div class="wl-diagram">
+      <svg viewBox="0 0 900 260" role="img" aria-label="Diagram architektury WorkLogger">
+        <defs><marker id="wl-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" style="color:var(--wl-muted)"/></marker></defs>
+        <rect class="wl-dg-box" x="10" y="95" width="160" height="70" rx="10"/><text class="wl-dg-t" x="90" y="127" text-anchor="middle">Przeglądarka / PWA</text><text class="wl-dg-s" x="90" y="145" text-anchor="middle">właściciel · klient (portal)</text>
+
+        <rect class="wl-dg-box acc" x="250" y="95" width="200" height="70" rx="10"/><text class="wl-dg-t" x="350" y="127" text-anchor="middle">Next.js 16</text><text class="wl-dg-s" x="350" y="145" text-anchor="middle">SSR · route handlers · NextAuth</text>
+
+        <rect class="wl-dg-box ok" x="530" y="40" width="170" height="60" rx="10"/><text class="wl-dg-t" x="615" y="66" text-anchor="middle">Prisma ORM</text><text class="wl-dg-s" x="615" y="83" text-anchor="middle">zapytania i migracje</text>
+
+        <rect class="wl-dg-box ok" x="730" y="40" width="160" height="60" rx="10"/><text class="wl-dg-t" x="810" y="66" text-anchor="middle">MySQL</text><text class="wl-dg-s" x="810" y="83" text-anchor="middle">dane aplikacji</text>
+
+        <rect class="wl-dg-box vio" x="530" y="160" width="170" height="60" rx="10"/><text class="wl-dg-t" x="615" y="186" text-anchor="middle">Stripe</text><text class="wl-dg-s" x="615" y="203" text-anchor="middle">subskrypcje · webhook</text>
+
+        <g style="color:var(--wl-muted)">
+          <path class="wl-dg-l" d="M170 130H248" marker-end="url(#wl-ar)"/>
+          <path class="wl-dg-l" d="M450 115L528 75" marker-end="url(#wl-ar)"/>
+          <path class="wl-dg-l" d="M700 70H728" marker-end="url(#wl-ar)"/>
+          <path class="wl-dg-l" d="M450 145L528 185" marker-end="url(#wl-ar)"/>
+        </g>
+      </svg>
+    </div>
+
+    <h3 style="margin-top:44px">Przepływ informacji</h3>
+    <ol class="wl-flow">
+      <li><div><h4>Rejestracja i logowanie</h4><p>Użytkownik zakłada konto (imię, e-mail, hasło, waluta) i potwierdza e-mail <b>kodem 6-cyfrowym</b> z ograniczonym czasem ważności. Sesją zarządza NextAuth.js, a reset hasła działa na jednorazowych tokenach.</p></div></li>
+      <li><div><h4>Dane po stronie serwera</h4><p>Strony dashboardu to komponenty serwerowe. Pobierają dane z paginacją, filtrami i wyszukiwaniem bezpośrednio przez Prisma, więc do przeglądarki trafia tylko to, co potrzebne.</p></div></li>
+      <li><div><h4>Wyliczane wartości</h4><p>Wartość projektu to suma <code>godziny × stawka</code> ze wpisów kalendarza, a status płatności wynika z porównania wartości projektu z sumą wpłat: <b>nieopłacony</b>, <b>częściowo</b> lub <b>opłacony</b>.</p></div></li>
+      <li><div><h4>Zadanie do kalendarza</h4><p>Z poziomu zadania otwierasz modal, potwierdzasz godziny i opis, a aplikacja tworzy wpis czasu powiązany z zadaniem i projektem.</p></div></li>
+      <li><div><h4>Portal klienta</h4><p>Dla klienta generowany jest unikalny hash. Pod adresem <code>/portal/[hash]</code> użytkownik portalu ma dostęp tylko do odczytu: projekty, wpisy czasu i płatności przypisane do jego klienta.</p></div></li>
+      <li><div><h4>Subskrypcja</h4><p>Płatności i cykl subskrypcji obsługuje Stripe (checkout, webhook, anulowanie i przywracanie), a stan zapisywany jest przy koncie użytkownika.</p></div></li>
+    </ol>
+
+    <table class="wl-tbl">
+      <thead><tr><th>Model</th><th>Najważniejsze pola</th><th>Relacje</th></tr></thead>
+      <tbody>
+        <tr><td><code>Client</code></td><td>nazwa, stawka, hash portalu, status</td><td>użytkownik, projekty</td></tr>
+        <tr><td><code>Project</code></td><td>nazwa, kolor, stawka, status</td><td>klient, wpisy, wpłaty, zadania</td></tr>
+        <tr><td><code>CalendarEvent</code></td><td>godziny, stawka, początek, koniec</td><td>projekt, zadanie</td></tr>
+        <tr><td><code>Income</code></td><td>kwota, data</td><td>projekt</td></tr>
+        <tr><td><code>Task</code></td><td>tytuł, status, daty startu i końca</td><td>projekt</td></tr>
+      </tbody>
+    </table>
+
+    <div class="wl-cols2">
+      <div class="wl-card"><h4>Bezpieczeństwo</h4>
+        <ul class="wl-list"><li>Hashowane hasła, weryfikacja e-mail, tokeny resetu</li><li>Zaszyfrowane sesje NextAuth.js</li><li>Prisma chroni przed wstrzyknięciem SQL</li><li>Portal klienta tylko do odczytu</li></ul></div>
+      <div class="wl-card"><h4>Wdrożenie</h4>
+        <ul class="wl-list"><li>Obrazy Docker dla środowiska dev i produkcyjnego</li><li><code>docker-compose.prod.yml</code> z konfiguracją produkcyjną</li><li>Aplikacja instalowalna jako PWA</li></ul></div>
+    </div>
+  </div>
+</section>
+</div>

@@ -5,7 +5,7 @@
 import * as remoteApi from './wordpress-api';
 import * as localApi from './local-api';
 
-const USE_LOCAL_API = import.meta.env.PROD; // true in production, false in development
+const USE_LOCAL_API = true; import.meta.env.PROD; // true in production, false in development
 
 export const api = USE_LOCAL_API ? localApi : remoteApi;
 
