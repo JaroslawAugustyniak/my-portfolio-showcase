@@ -21,11 +21,11 @@ const AboutSection = () => {
     <div className="container">
       <p className="text-meta mb-8">{post?.title.rendered}</p>
       <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
-        <div className="grid gap-6" dangerouslySetInnerHTML={{ __html: page?.content.rendered || '' }} />
+        <div className="flex flex-col items-start gap-6" dangerouslySetInnerHTML={{ __html: page?.content.rendered || '' }} />
         <div className="grid grid-cols-2 gap-4">
           {page?.acf.skills.map((stat) => (
             <div key={stat.value} className="p-5 rounded-xl card-shadow bg-card">
-              <p className="text-display text-2xl mb-1">{stat.value}</p>
+              <p className="text-display text-lg md:text-2xl mb-1">{stat.value}</p>
               <p className="text-meta text-[10px]">{stat.description}</p>
             </div>
           ))}
